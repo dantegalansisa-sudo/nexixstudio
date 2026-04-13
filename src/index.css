@@ -92,9 +92,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: clamp(3.2rem, 6vw, 6.5rem);
+  font-size: clamp(2.6rem, 4.5vw, 4.5rem);
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.1;
 }
 
 h2 {
@@ -487,19 +487,18 @@ section {
 /* Code floating element */
 .hero__code-float {
   position: absolute;
-  right: 5%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 320px;
+  right: 3%;
+  bottom: 12%;
+  width: 280px;
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--border-light);
   border-radius: 12px;
-  padding: 20px;
+  padding: 18px;
   font-family: 'Courier New', monospace;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   line-height: 1.8;
-  opacity: 0.6;
+  opacity: 0.45;
   z-index: 1;
   pointer-events: none;
   box-shadow: 0 4px 24px rgba(0,0,0,0.04);
@@ -1540,4 +1539,152 @@ section {
     transform: scale(1.6);
     opacity: 0;
   }
+}
+
+/* ========================================
+   CLIENTS MARQUEE
+   ======================================== */
+
+.marquee-section {
+  background: var(--bg-light);
+  padding: 48px 0;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.marquee-section__label {
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+}
+
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+}
+
+.marquee__track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+  animation: marquee-scroll 35s linear infinite;
+}
+
+.marquee__item {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-on-light);
+  white-space: nowrap;
+  padding: 0 12px;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.marquee__item:hover {
+  opacity: 1;
+}
+
+.marquee__dot {
+  color: var(--primary);
+  margin-left: 12px;
+  opacity: 0.3;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ========================================
+   FAQ
+   ======================================== */
+
+.faq {
+  background: var(--bg-off);
+}
+
+.faq__header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.faq__title {
+  color: var(--text-on-light);
+  justify-content: center;
+}
+
+.faq__subtitle {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-top: 16px;
+}
+
+.faq__list {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.faq__item {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.faq__item:first-child {
+  border-top: 1px solid var(--border-light);
+}
+
+.faq__question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text-on-light);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  background: none;
+  border: none;
+}
+
+.faq__question:hover {
+  color: var(--primary);
+}
+
+.faq__chevron {
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+  color: var(--text-muted);
+}
+
+.faq__chevron--open {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+.faq__answer-wrapper {
+  overflow: hidden;
+}
+
+.faq__answer {
+  padding: 0 0 22px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  max-width: 620px;
 }
