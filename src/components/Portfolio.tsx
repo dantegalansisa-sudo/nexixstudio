@@ -161,7 +161,7 @@ export default function Portfolio() {
         >
           <MagneticButton
             href="https://wa.me/18295234738?text=Hola%20NEXIX%2C%20quiero%20que%20mi%20negocio%20sea%20el%20pr%C3%B3ximo"
-            className="btn-primary"
+            className="btn-primary btn-primary--glow"
           >
             &iquest;Tu negocio podr&iacute;a ser el pr&oacute;ximo? &rarr; Hablemos
           </MagneticButton>

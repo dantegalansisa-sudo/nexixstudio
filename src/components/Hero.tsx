@@ -1,4 +1,5 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import MagneticButton from './MagneticButton';
 
 const PREMIUM_EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
@@ -21,11 +22,53 @@ export default function Hero() {
   const y = useTransform(scrollYProgress, [0, 0.4], [0, 80]);
   const opacity = useTransform(scrollYProgress, [0, 0.35], [1, 0]);
 
+  // Cursor reactive glow
+  const heroRef = useRef<HTMLElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = hero.getBoundingClientRect();
+      mouseX.set(((e.clientX - rect.left) / rect.width) * 100);
+      mouseY.set(((e.clientY - rect.top) / rect.height) * 100);
+    };
+    hero.addEventListener('mousemove', handleMouseMove);
+    return () => hero.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  const cursorGlowX = useTransform(springX, (v) => `${v}%`);
+  const cursorGlowY = useTransform(springY, (v) => `${v}%`);
+
   const titleWords = ['Construimos', 'el', 'Futuro', 'Digital', 'de', 'tu', 'Negocio'];
   const highlightWords = ['Futuro', 'Digital'];
 
   return (
-    <section className="hero" id="hero">
+    <section className="hero" id="hero" ref={heroRef}>
+      {/* Animated mesh gradient background — multi-layer 3D illusion */}
+      <div className="hero__mesh">
+        <div className="hero__blob hero__blob--1" />
+        <div className="hero__blob hero__blob--2" />
+        <div className="hero__blob hero__blob--3" />
+        <div className="hero__blob hero__blob--4" />
+      </div>
+
+      {/* Cursor reactive glow */}
+      <motion.div
+        className="hero__cursor-glow"
+        style={{
+          left: cursorGlowX,
+          top: cursorGlowY,
+        }}
+      />
+
+      {/* Subtle grid overlay */}
+      <div className="hero__grid-overlay" />
+
       <motion.div className="hero__content" style={{ y, opacity }}>
         {/* Badge pill */}
         <motion.div
@@ -34,7 +77,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: PREMIUM_EASE }}
         >
-          <span>&#9889;</span> Agencia Digital en Rep&uacute;blica Dominicana
+          <span className="hero__badge-dot" /> Agencia Digital en Rep&uacute;blica Dominicana
         </motion.div>
 
         {/* H1 — RevealText stagger by word */}
@@ -75,7 +118,7 @@ export default function Hero() {
         >
           <MagneticButton
             href="https://wa.me/18295234738?text=Hola%20NEXIX%2C%20quiero%20mi%20web"
-            className="btn-primary"
+            className="btn-primary btn-primary--glow"
           >
             Quiero mi Web &rarr;
           </MagneticButton>
@@ -108,11 +151,11 @@ export default function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Floating code element */}
+      {/* Floating code element — glass card */}
       <motion.div
         className="hero__code-float"
         initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 0.5, x: 0 }}
+        animate={{ opacity: 0.85, x: 0 }}
         transition={{ duration: 1.2, delay: 1.8, ease: PREMIUM_EASE }}
       >
         <div className="hero__code-dots">
