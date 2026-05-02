@@ -1,44 +1,122 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import RevealText from './RevealText';
 import MagneticButton from './MagneticButton';
 
 const PROJECTS = [
-  { name: 'Centro Odontol\u00f3gico Dimado', type: 'Cl\u00ednica Dental', category: 'clinicas', img: '/imagenes/dimado.png', url: 'https://www.dimadocentro.com/' },
-  { name: 'Elite Dental Care', type: 'Cl\u00ednica Dental', category: 'clinicas', img: '/imagenes/elitedental.png', url: 'https://www.elitedentalcarerd.com/' },
-  { name: 'El Panda Restaurante', type: 'Restaurante', category: 'restaurantes', img: '/imagenes/panda.png', url: 'https://www.elpandarestaurante.com/' },
-  { name: 'MYJ Travels', type: 'Agencia de Viajes', category: 'servicios', img: '/imagenes/myj travels.png', url: 'https://myjtravels.com/' },
-  { name: 'Grupo Financiero MYJ', type: 'Financiera', category: 'servicios', img: '/imagenes/grupofinancieromyj.png', url: 'https://grupofinancieromyj.com/' },
-  { name: 'Oliujs Inmobiliaria', type: 'Inmobiliaria', category: 'servicios', img: '/imagenes/inmobiliaria.png', url: 'https://oliujs-inmobiliaria.vercel.app' },
+  {
+    name: 'Centro Odontológico Dimado',
+    type: 'Clínica Dental',
+    img: '/imagenes/dimado.png',
+    url: 'https://www.dimadocentro.com/',
+    desc: 'Web profesional para una de las clínicas dentales más reconocidas de la zona. Diseño limpio, sección de servicios, equipo médico y contacto directo por WhatsApp.',
+  },
+  {
+    name: 'Elite Dental Care',
+    type: 'Clínica Dental',
+    img: '/imagenes/elitedental.png',
+    url: 'https://www.elitedentalcarerd.com/',
+    desc: 'Sitio premium para clínica dental enfocada en una experiencia visual moderna. Galería de tratamientos, perfil del equipo y formulario de citas.',
+  },
+  {
+    name: 'El Panda Restaurante',
+    type: 'Restaurante',
+    img: '/imagenes/panda.png',
+    url: 'https://www.elpandarestaurante.com/',
+    desc: 'Web completa para restaurante con menú interactivo, sección de reservas y galería. Diseñada para abrir el apetito desde el primer scroll.',
+  },
+  {
+    name: 'MYJ Travels',
+    type: 'Agencia de Viajes',
+    img: '/imagenes/myj travels.png',
+    url: 'https://myjtravels.com/',
+    desc: 'Plataforma para agencia de viajes con paquetes destacados, destinos populares y formulario de cotización. Diseño que vende experiencias.',
+  },
+  {
+    name: 'Grupo Financiero MYJ',
+    type: 'Financiera',
+    img: '/imagenes/grupofinancieromyj.png',
+    url: 'https://grupofinancieromyj.com/',
+    desc: 'Sitio corporativo para empresa financiera. Servicios, requisitos, proceso de solicitud y enfoque profesional que transmite confianza inmediata.',
+  },
+  {
+    name: 'Oliujs Inmobiliaria',
+    type: 'Inmobiliaria',
+    img: '/imagenes/inmobiliaria.png',
+    url: 'https://oliujs-inmobiliaria.vercel.app',
+    desc: 'Web inmobiliaria con catálogo de propiedades, filtros por tipo y ubicación, y sección de contacto directo con asesores.',
+  },
 ];
 
-const FILTERS = [
-  { label: 'Todos', value: 'todos' },
-  { label: 'Cl\u00ednicas', value: 'clinicas' },
-  { label: 'Restaurantes', value: 'restaurantes' },
-  { label: 'Servicios', value: 'servicios' },
-];
+interface Project {
+  name: string;
+  type: string;
+  img: string;
+  url: string;
+  desc: string;
+}
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
-};
+function StickyCard({ project, index, total }: { project: Project; index: number; total: number }) {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ['start start', 'end start'],
+  });
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 48, scale: 0.96 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.65, ease: [0.76, 0, 0.24, 1] as const } },
-};
-
-export default function Portfolio() {
-  const [filter, setFilter] = useState('todos');
-  const filtered = filter === 'todos' ? PROJECTS : PROJECTS.filter((p) => p.category === filter);
+  const targetScale = 1 - (total - 1 - index) * 0.04;
+  const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
 
   return (
+    <div ref={targetRef} className="portfolio__card-stack-container">
+      <motion.div
+        className="portfolio__sticky-card"
+        style={{
+          scale,
+          top: `calc(100px + ${index * 28}px)`,
+        }}
+      >
+        <div className="portfolio__sticky-card-info">
+          <span className="portfolio__sticky-card-num">{String(index + 1).padStart(2, '0')}</span>
+          <span className="portfolio__sticky-card-type">{project.type}</span>
+          <h3 className="portfolio__sticky-card-name">{project.name}</h3>
+          <p className="portfolio__sticky-card-desc">{project.desc}</p>
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="portfolio__sticky-card-link"
+          >
+            Ver Sitio Live
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 17l9.2-9.2M17 17V7H7" />
+            </svg>
+          </a>
+        </div>
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="portfolio__sticky-card-image-wrapper"
+        >
+          <img
+            src={project.img}
+            alt={project.name}
+            className="portfolio__sticky-card-image"
+            loading="lazy"
+          />
+        </a>
+      </motion.div>
+    </div>
+  );
+}
+
+export default function Portfolio() {
+  return (
     <section className="portfolio" id="portafolio">
-      <div className="container">
+      <div className="container portfolio__header-wrapper">
         <div className="portfolio__header">
           <RevealText tag="h2" className="portfolio__title">
-            Trabajo Que Habla Por S\u00ed Solo
+            Trabajo Que Habla Por Sí Solo
           </RevealText>
           <motion.p
             className="portfolio__subtitle"
@@ -50,56 +128,20 @@ export default function Portfolio() {
             Proyectos reales para negocios reales &mdash; en Rep&uacute;blica Dominicana y m&aacute;s all&aacute;.
           </motion.p>
         </div>
+      </div>
 
-        <motion.div
-          className="portfolio__filters"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {FILTERS.map((f) => (
-            <button
-              key={f.value}
-              className={`portfolio__filter-chip ${filter === f.value ? 'portfolio__filter-chip--active' : ''}`}
-              onClick={() => setFilter(f.value)}
-            >
-              {f.label}
-            </button>
-          ))}
-        </motion.div>
+      <div className="portfolio__stack">
+        {PROJECTS.map((project, i) => (
+          <StickyCard
+            key={project.name}
+            project={project}
+            index={i}
+            total={PROJECTS.length}
+          />
+        ))}
+      </div>
 
-        <motion.div
-          className="portfolio__grid"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-        >
-          <AnimatePresence mode="popLayout">
-            {filtered.map((project, i) => (
-              <motion.a
-                key={project.name}
-                className="portfolio__card"
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variants={cardVariants}
-                layout
-                exit={{ opacity: 0, scale: 0.9 }}
-              >
-                <img src={project.img} alt={project.name} className="portfolio__card-img" loading="lazy" />
-                <div className="portfolio__card-overlay">
-                  <span className="portfolio__card-num">{String(i + 1).padStart(2, '0')}</span>
-                  <h3 className="portfolio__card-name">{project.name}</h3>
-                  <span className="portfolio__card-type">{project.type}</span>
-                  <span className="portfolio__card-link">Ver Proyecto &rarr;</span>
-                </div>
-              </motion.a>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
+      <div className="container">
         <motion.p
           className="portfolio__note"
           initial={{ opacity: 0 }}
