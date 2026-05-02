@@ -1,188 +1,195 @@
-import { useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import * as THREE from 'three';
 import MagneticButton from './MagneticButton';
 
 const PREMIUM_EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
 
-const wordVariants = {
-  hidden: { y: '110%', rotate: 2 },
-  visible: (i: number) => ({
-    y: 0,
-    rotate: 0,
-    transition: {
-      duration: 0.85,
-      delay: 0.3 + i * 0.07,
-      ease: PREMIUM_EASE,
-    },
-  }),
-};
+interface VantaEffect {
+  destroy: () => void;
+}
+
+// Title broken into lines for proper reveal mask animation
+const TITLE_LINES = [
+  ['Construimos', 'el', 'Futuro'],
+  ['Digital', 'de', 'tu', 'Negocio'],
+];
+const HIGHLIGHT_WORDS = ['Futuro', 'Digital'];
 
 export default function Hero() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 0.4], [0, 80]);
   const opacity = useTransform(scrollYProgress, [0, 0.35], [1, 0]);
 
-  // Cursor reactive glow
-  const heroRef = useRef<HTMLElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 50, damping: 20 });
-  const springY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+  const vantaRef = useRef<HTMLDivElement>(null);
+  const [vantaEffect, setVantaEffect] = useState<VantaEffect | null>(null);
 
+  // Vanta NET background — lazy load
   useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = hero.getBoundingClientRect();
-      mouseX.set(((e.clientX - rect.left) / rect.width) * 100);
-      mouseY.set(((e.clientY - rect.top) / rect.height) * 100);
+    if (vantaEffect || !vantaRef.current) return;
+
+    // Respect prefers-reduced-motion — skip animated background
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) return;
+
+    let cancelled = false;
+    let effectInstance: VantaEffect | null = null;
+
+    import('vanta/dist/vanta.net.min').then(({ default: NET }) => {
+      if (cancelled || !vantaRef.current) return;
+
+      effectInstance = NET({
+        el: vantaRef.current,
+        THREE,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        color: 0x00d4ff,
+        backgroundColor: 0x050510,
+        points: 12.0,
+        maxDistance: 24.0,
+        spacing: 18.0,
+        showDots: true,
+      });
+
+      setVantaEffect(effectInstance);
+    });
+
+    return () => {
+      cancelled = true;
+      if (effectInstance) effectInstance.destroy();
     };
-    hero.addEventListener('mousemove', handleMouseMove);
-    return () => hero.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  const cursorGlowX = useTransform(springX, (v) => `${v}%`);
-  const cursorGlowY = useTransform(springY, (v) => `${v}%`);
-
-  const titleWords = ['Construimos', 'el', 'Futuro', 'Digital', 'de', 'tu', 'Negocio'];
-  const highlightWords = ['Futuro', 'Digital'];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <section className="hero" id="hero" ref={heroRef}>
-      {/* Animated mesh gradient background — multi-layer 3D illusion */}
-      <div className="hero__mesh">
-        <div className="hero__blob hero__blob--1" />
-        <div className="hero__blob hero__blob--2" />
-        <div className="hero__blob hero__blob--3" />
-        <div className="hero__blob hero__blob--4" />
-      </div>
+    <section className="hero-cinematic" id="hero">
+      {/* Vanta NET animated 3D background */}
+      <div ref={vantaRef} className="hero-cinematic__vanta" />
 
-      {/* Cursor reactive glow */}
-      <motion.div
-        className="hero__cursor-glow"
-        style={{
-          left: cursorGlowX,
-          top: cursorGlowY,
-        }}
-      />
+      {/* Vignette overlay for legibility */}
+      <div className="hero-cinematic__vignette" />
 
-      {/* Subtle grid overlay */}
-      <div className="hero__grid-overlay" />
+      {/* Bottom fade for smooth transition to next section */}
+      <div className="hero-cinematic__fade-bottom" />
 
-      <motion.div className="hero__content" style={{ y, opacity }}>
-        {/* Badge pill */}
+      <motion.div className="hero-cinematic__content" style={{ y, opacity }}>
+        {/* Badge pill — cyan glow */}
         <motion.div
-          className="hero__badge"
+          className="hero-cinematic__badge"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: PREMIUM_EASE }}
+          transition={{ duration: 0.7, ease: PREMIUM_EASE }}
         >
-          <span className="hero__badge-dot" /> Agencia Digital en Rep&uacute;blica Dominicana
+          <span className="hero-cinematic__badge-dot" />
+          Agencia Digital en Rep&uacute;blica Dominicana
         </motion.div>
 
-        {/* H1 — RevealText stagger by word */}
-        <h1 className="hero__title" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3em', justifyContent: 'center' }}>
-          {titleWords.map((word, i) => (
-            <span key={i} style={{ overflow: 'hidden', display: 'inline-block' }}>
-              <motion.span
-                style={{ display: 'inline-block' }}
-                custom={i}
-                initial="hidden"
-                animate="visible"
-                variants={wordVariants}
-                className={highlightWords.includes(word) ? 'hero__title-highlight' : ''}
-              >
-                {word}
-              </motion.span>
+        {/* H1 — Massive title with line-by-line reveal mask */}
+        <h1 className="hero-cinematic__title">
+          {TITLE_LINES.map((line, lineIdx) => (
+            <span key={lineIdx} className="hero-cinematic__title-line">
+              {line.map((word, wordIdx) => {
+                const totalDelay = 0.3 + (lineIdx * line.length + wordIdx) * 0.08;
+                const isHighlight = HIGHLIGHT_WORDS.includes(word);
+                return (
+                  <span key={wordIdx} className="hero-cinematic__title-mask">
+                    <motion.span
+                      className={`hero-cinematic__title-word ${
+                        isHighlight ? 'hero-cinematic__title-word--highlight' : ''
+                      }`}
+                      initial={{ y: '110%' }}
+                      animate={{ y: '0%' }}
+                      transition={{
+                        duration: 1,
+                        delay: totalDelay,
+                        ease: PREMIUM_EASE,
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  </span>
+                );
+              })}
             </span>
           ))}
         </h1>
 
         {/* Subtitle */}
         <motion.p
-          className="hero__subtitle"
+          className="hero-cinematic__subtitle"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1, ease: PREMIUM_EASE }}
+          transition={{ duration: 0.8, delay: 1.4, ease: PREMIUM_EASE }}
         >
           Webs que conquistan mercados. Automatizaci&oacute;n con IA que elimina el trabajo repetitivo.
           Somos el equipo tech que tu empresa necesitaba.
         </motion.p>
 
-        {/* CTA Buttons */}
+        {/* CTAs */}
         <motion.div
-          className="hero__buttons"
+          className="hero-cinematic__buttons"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.2, ease: PREMIUM_EASE }}
+          transition={{ duration: 0.8, delay: 1.6, ease: PREMIUM_EASE }}
         >
           <MagneticButton
             href="https://wa.me/18295234738?text=Hola%20NEXIX%2C%20quiero%20mi%20web"
-            className="btn-primary btn-primary--glow"
+            className="btn-cinematic btn-cinematic--primary"
           >
-            Quiero mi Web &rarr;
+            <span>Quiero mi Web</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
           </MagneticButton>
-          <MagneticButton
-            href="#portafolio"
-            className="btn-outline"
-          >
-            Ver Portafolio
+          <MagneticButton href="#portafolio" className="btn-cinematic btn-cinematic--ghost">
+            <span>Ver Portafolio</span>
           </MagneticButton>
         </motion.div>
 
-        {/* Social proof pills */}
+        {/* Social proof */}
         <motion.div
-          className="hero__proof"
+          className="hero-cinematic__proof"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.5, ease: PREMIUM_EASE }}
+          transition={{ duration: 0.8, delay: 1.9, ease: PREMIUM_EASE }}
         >
-          <span className="hero__proof-item">
-            <span className="hero__proof-check">&#10003;</span> +15 proyectos entregados
+          <span className="hero-cinematic__proof-item">
+            <span className="hero-cinematic__proof-check">&#10003;</span> +15 proyectos entregados
           </span>
-          <span className="hero__proof-dot">&middot;</span>
-          <span className="hero__proof-item">
-            <span className="hero__proof-check">&#10003;</span> RD y Espa&ntilde;a
+          <span className="hero-cinematic__proof-divider" />
+          <span className="hero-cinematic__proof-item">
+            <span className="hero-cinematic__proof-check">&#10003;</span> RD y Espa&ntilde;a
           </span>
-          <span className="hero__proof-dot">&middot;</span>
-          <span className="hero__proof-item">
-            <span className="hero__proof-check">&#10003;</span> Respuesta en 24h
+          <span className="hero-cinematic__proof-divider" />
+          <span className="hero-cinematic__proof-item">
+            <span className="hero-cinematic__proof-check">&#10003;</span> Respuesta en 24h
           </span>
         </motion.div>
-      </motion.div>
-
-      {/* Floating code element — glass card */}
-      <motion.div
-        className="hero__code-float"
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 0.85, x: 0 }}
-        transition={{ duration: 1.2, delay: 1.8, ease: PREMIUM_EASE }}
-      >
-        <div className="hero__code-dots">
-          <span /><span /><span />
-        </div>
-        <span className="code-comment">{'// NEXIX Tech Studio'}</span><br />
-        <span className="code-keyword">const</span> proyecto = {'{'}<br />
-        &nbsp;&nbsp;cliente: <span className="code-string">"Tu Negocio"</span>,<br />
-        &nbsp;&nbsp;stack: <span className="code-string">"React + IA"</span>,<br />
-        &nbsp;&nbsp;estado: <span className="code-string">"&#128640; Lanzado"</span>,<br />
-        {'}'}<br /><br />
-        <span className="code-keyword">export default</span> proyecto
       </motion.div>
 
       {/* Scroll indicator */}
       <motion.div
-        className="hero__scroll"
+        className="hero-cinematic__scroll"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.2, duration: 0.8 }}
+        transition={{ delay: 2.4, duration: 0.8 }}
       >
         <span>Scroll</span>
-        <motion.div
-          className="hero__scroll-chevron"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        />
+        <span className="hero-cinematic__scroll-line">
+          <motion.span
+            className="hero-cinematic__scroll-line-fill"
+            animate={{ y: ['-100%', '100%'] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </span>
       </motion.div>
     </section>
   );

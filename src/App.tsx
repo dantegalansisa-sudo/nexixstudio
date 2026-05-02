@@ -11,10 +11,13 @@ import FAQ from './components/FAQ';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
 import WhatsAppFAB from './components/WhatsAppFAB';
+import CustomCursor from './components/CustomCursor';
+import LenisProvider from './components/LenisProvider';
 
 function App() {
   return (
-    <>
+    <LenisProvider>
+      <CustomCursor />
       <Navbar />
       <Hero />
       <ClientsMarquee />
@@ -28,7 +31,7 @@ function App() {
       <CTA />
       <Footer />
       <WhatsAppFAB />
-    </>
+    </LenisProvider>
   );
 }
 

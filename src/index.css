@@ -3,7 +3,12 @@
    ======================================== */
 
 :root {
-  /* Fondos */
+  /* === CINEMATIC DARK PALETTE (NEXIX v2) === */
+  --bg-cinematic:   #050510;
+  --bg-cinematic-2: #0A0A18;
+  --bg-cinematic-3: #0F0F22;
+
+  /* Legacy backgrounds (mientras migramos secciones) */
   --bg-dark:        #070B14;
   --bg-dark-2:      #0D1525;
   --bg-light:       #FFFFFF;
@@ -16,17 +21,34 @@
   --primary-dark:   #1D4ED8;
   --primary-rgb:    59, 130, 246;
 
-  /* Acento secundario — Cyan */
-  --cyan:           #06B6D4;
-  --cyan-glow:      #06B6D415;
+  /* Acento secundario — Cyan cinematic */
+  --cyan:           #00D4FF;
+  --cyan-glow:      #00D4FF40;
+  --cyan-rgb:       0, 212, 255;
 
-  /* Texto */
+  /* Acento terciario — Purple */
+  --purple:         #8B5CF6;
+  --purple-rgb:     139, 92, 246;
+
+  /* Gradient signatures */
+  --gradient-primary: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+  --gradient-cinematic: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
+  --gradient-glow: linear-gradient(135deg, #3B82F6 0%, #00D4FF 50%, #8B5CF6 100%);
+
+  /* Texto cinematic */
+  --text-cinematic:    #F5F5F7;
+  --text-cinematic-mt: #94A3B8;
+  --text-cinematic-dim:#64748B;
+
+  /* Texto legacy */
   --text-on-dark:   #FFFFFF;
   --text-muted-dark:#94A3B8;
   --text-on-light:  #0F172A;
   --text-muted:     #64748B;
 
   /* UI */
+  --border-cinematic: rgba(245, 245, 247, 0.08);
+  --border-cinematic-strong: rgba(245, 245, 247, 0.16);
   --border-dark:    rgba(255,255,255,0.08);
   --border-light:   rgba(15,23,42,0.08);
   --radius-card:    20px;
@@ -2105,4 +2127,406 @@ section {
   font-size: 0.95rem;
   line-height: 1.75;
   max-width: 620px;
+}
+
+/* ============================================================
+   CINEMATIC v2 — Hero rebuild + Custom Cursor + Dark theme
+   ============================================================ */
+
+/* === CUSTOM CURSOR === */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  margin-left: -3px;
+  margin-top: -3px;
+  box-shadow: 0 0 12px var(--cyan);
+}
+
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 212, 255, 0.6);
+  margin-left: -18px;
+  margin-top: -18px;
+  background: rgba(0, 212, 255, 0.04);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.cursor-ring--hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 1);
+}
+
+/* Hide custom cursor on touch devices */
+@media (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+
+/* === HERO CINEMATIC === */
+
+.hero-cinematic {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--bg-cinematic);
+  overflow: hidden;
+  isolation: isolate;
+  padding-top: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-cinematic__vanta {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Vignette overlay — improves legibility on top of Vanta NET */
+.hero-cinematic__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at center, transparent 0%, transparent 30%, rgba(5, 5, 16, 0.5) 80%, rgba(5, 5, 16, 0.85) 100%);
+  pointer-events: none;
+}
+
+/* Bottom fade for smooth transition to next section */
+.hero-cinematic__fade-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-cinematic) 100%);
+  pointer-events: none;
+}
+
+.hero-cinematic__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 1100px;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+/* === BADGE === */
+.hero-cinematic__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: 50px;
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: var(--cyan);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.15);
+}
+
+.hero-cinematic__badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+  animation: badge-pulse-cyan 2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse-cyan {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.6); }
+  50% { box-shadow: 0 0 0 8px rgba(0, 212, 255, 0); }
+}
+
+/* === MASSIVE TITLE === */
+.hero-cinematic__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--text-cinematic);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.05em;
+}
+
+.hero-cinematic__title-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25em;
+  line-height: 1;
+}
+
+.hero-cinematic__title-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.05em 0;
+  line-height: 1;
+}
+
+.hero-cinematic__title-word {
+  display: inline-block;
+  line-height: 1;
+}
+
+.hero-cinematic__title-word--highlight {
+  background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  position: relative;
+}
+
+/* === SUBTITLE === */
+.hero-cinematic__subtitle {
+  color: var(--text-cinematic-mt);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* === BUTTONS === */
+.hero-cinematic__buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.btn-cinematic {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  border-radius: 50px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+}
+
+.btn-cinematic--primary {
+  color: #050510;
+  background: linear-gradient(135deg, #00D4FF 0%, #3B82F6 50%, #8B5CF6 100%);
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.4),
+    0 8px 24px -4px rgba(0, 212, 255, 0.5),
+    0 0 60px -10px rgba(139, 92, 246, 0.4);
+  font-weight: 700;
+  animation: btn-gradient-shift 4s ease-in-out infinite;
+}
+
+.btn-cinematic--primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.6),
+    0 16px 40px -4px rgba(0, 212, 255, 0.6),
+    0 0 80px -10px rgba(139, 92, 246, 0.6);
+}
+
+@keyframes btn-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.btn-cinematic--ghost {
+  color: var(--text-cinematic);
+  background: rgba(245, 245, 247, 0.04);
+  border: 1px solid rgba(245, 245, 247, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.btn-cinematic--ghost:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.5);
+  color: var(--cyan);
+}
+
+/* === SOCIAL PROOF === */
+.hero-cinematic__proof {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  color: var(--text-cinematic-mt);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.hero-cinematic__proof-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-cinematic__proof-check {
+  color: var(--cyan);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+.hero-cinematic__proof-divider {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-cinematic-dim);
+  opacity: 0.4;
+}
+
+/* === SCROLL INDICATOR === */
+.hero-cinematic__scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+  color: var(--text-cinematic-mt);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.hero-cinematic__scroll-line {
+  position: relative;
+  width: 1px;
+  height: 50px;
+  background: rgba(245, 245, 247, 0.15);
+  overflow: hidden;
+}
+
+.hero-cinematic__scroll-line-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(180deg, transparent 0%, var(--cyan) 50%, transparent 100%);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .hero-cinematic__title {
+    font-size: clamp(2.5rem, 11vw, 4.5rem);
+  }
+  .hero-cinematic__buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+  .btn-cinematic {
+    width: 100%;
+    justify-content: center;
+  }
+  .hero-cinematic__proof {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hero-cinematic__proof-divider {
+    display: none;
+  }
+  .hero-cinematic__scroll {
+    bottom: 24px;
+  }
+}
+
+/* === NAVBAR ADJUSTMENT for cinematic hero === */
+.navbar:not(.navbar--scrolled) .navbar__logo-name {
+  color: var(--cyan);
+}
+
+.navbar:not(.navbar--scrolled) .navbar__logo-sub {
+  color: var(--text-cinematic-mt);
+}
+
+.navbar:not(.navbar--scrolled) .navbar__link {
+  color: var(--text-cinematic-mt);
+}
+
+.navbar:not(.navbar--scrolled) .navbar__link:hover {
+  color: var(--text-cinematic);
+}
+
+.navbar:not(.navbar--scrolled) .navbar__hamburger span {
+  background: var(--text-cinematic);
+}
+
+/* When scrolled past hero, navbar uses dark backdrop */
+.navbar.navbar--scrolled {
+  background: rgba(5, 5, 16, 0.85);
+  border-bottom: 1px solid var(--border-cinematic);
+  box-shadow: none;
+}
+
+.navbar.navbar--scrolled .navbar__link {
+  color: var(--text-cinematic-mt);
+}
+
+.navbar.navbar--scrolled .navbar__link:hover {
+  color: var(--cyan);
+}
+
+/* Reduced motion fallback for hero */
+@media (prefers-reduced-motion: reduce) {
+  .hero-cinematic__vanta {
+    background:
+      radial-gradient(circle at 30% 30%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+      var(--bg-cinematic);
+  }
+  .hero-cinematic__title-word,
+  .hero-cinematic__badge-dot,
+  .hero-cinematic__scroll-line-fill,
+  .btn-cinematic--primary {
+    animation: none !important;
+  }
 }
