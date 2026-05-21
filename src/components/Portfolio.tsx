@@ -34,19 +34,13 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    label: 'GASTRONOMIA & TURISMO',
+    label: 'GASTRONOMIA',
     projects: [
       {
         name: 'El Panda Restaurante',
         type: 'Restaurante',
         img: '/imagenes/panda.png',
         url: 'https://www.elpandarestaurante.com/',
-      },
-      {
-        name: 'MYJ Travels',
-        type: 'Agencia de Viajes',
-        img: '/imagenes/myj travels.png',
-        url: 'https://myjtravels.com/',
       },
     ],
   },
