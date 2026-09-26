@@ -1,0 +1,313 @@
+/* ============================================
+   NEXIX — Proceso
+   Desktop: step cards stand on the pedestals of the background photo
+   (positions in % of the photo, via useCoverFrame). Below 1100px they stack.
+   ============================================ */
+.nx-process {
+  position: relative;
+  /* Photo (full width, bottom-aligned) + headroom above it for the heading */
+  height: calc(56.3vw + 170px);
+  min-height: 860px;
+  overflow: hidden;
+  background: #eef3fc;
+  font-family: var(--nx-font);
+  word-spacing: 0.04em;
+  isolation: isolate;
+}
+.nx-process__bg img {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: -2;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  transform: translateX(-50%);
+  display: block;
+}
+.nx-process__veil {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* Fade the top of the photo into the page so the heading sits on a clean sky */
+  background:
+    radial-gradient(40% 26% at 50% 22%, rgba(238, 243, 252, 0.85) 0%, rgba(238, 243, 252, 0) 100%),
+    linear-gradient(180deg, #eef3fc 0%, #eef3fc calc(100% - 56.3vw), rgba(238, 243, 252, 0.55) calc(100% - 46vw), rgba(238, 243, 252, 0) calc(100% - 38vw));
+}
+
+.nx-eyebrow--lines {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+.nx-eyebrow--lines::before,
+.nx-eyebrow--lines::after {
+  content: "";
+  width: 64px;
+  height: 1px;
+  background: rgba(18, 30, 80, 0.22);
+}
+
+.nx-process__head {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 112px;
+}
+.nx-process__title {
+  font-size: clamp(34px, 3.6vw, 60px);
+  line-height: 1.06;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  word-spacing: 0.05em;
+  color: var(--nx-ink);
+  margin-bottom: 18px;
+}
+.nx-process__lead {
+  max-width: 540px;
+  font-size: clamp(15px, 1.15vw, 17.5px);
+  line-height: 1.55;
+  color: var(--nx-text);
+}
+
+/* Frame that matches the rendered photo */
+.nx-process__frame {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+.nx-steps {
+  list-style: none;
+  position: absolute;
+  inset: 0;
+}
+.nx-step {
+  position: absolute;
+  left: calc(var(--x) - 8.2%);
+  bottom: calc(100% - var(--y) + 0.4%);
+  width: 16.4%;
+  pointer-events: auto;
+}
+.nx-step__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--fw) * 0.016px) calc(var(--fw) * 0.0155px) calc(var(--fw) * 0.014px);
+  border-radius: calc(var(--fw) * 0.016px);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.86) 0%, rgba(246, 248, 255, 0.72) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 30px 60px -30px rgba(40, 60, 170, 0.45), inset 0 1px 0 #fff;
+  animation: nx-float 6s ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
+  transition: box-shadow 0.5s var(--nx-ease);
+}
+.nx-step__card:hover {
+  box-shadow: 0 0 0 1px #fff, 0 0 44px -8px rgba(120, 140, 255, 0.55), 0 30px 60px -30px rgba(40, 60, 170, 0.45);
+}
+@keyframes nx-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.nx-step__num {
+  font-size: max(12px, calc(var(--fw) * 0.0105px));
+  font-weight: 600;
+  color: var(--nx-muted);
+  margin-bottom: calc(var(--fw) * 0.012px);
+}
+.nx-step__icon {
+  position: absolute;
+  top: calc(var(--fw) * -0.018px);
+  right: calc(var(--fw) * 0.014px);
+  display: grid;
+  place-items: center;
+  width: calc(var(--fw) * 0.05px);
+  height: calc(var(--fw) * 0.05px);
+  border-radius: calc(var(--fw) * 0.013px);
+  color: var(--nx-blue);
+  background: rgba(244, 246, 255, 0.92);
+  border: 1px solid #fff;
+  box-shadow: 0 12px 26px -12px rgba(52, 87, 238, 0.55);
+}
+.nx-step__icon svg {
+  width: 52%;
+  height: 52%;
+}
+.nx-step__title {
+  font-size: max(17px, calc(var(--fw) * 0.0152px));
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--nx-ink);
+  margin-bottom: calc(var(--fw) * 0.0065px);
+}
+.nx-step__text {
+  font-size: max(12.5px, calc(var(--fw) * 0.0096px));
+  line-height: 1.5;
+  color: var(--nx-text);
+  margin-bottom: calc(var(--fw) * 0.012px);
+}
+.nx-step__cta-wrap {
+  align-self: flex-start;
+  margin-top: auto;
+}
+.nx-step__cta {
+  display: grid;
+  place-items: center;
+  width: max(38px, calc(var(--fw) * 0.029px));
+  height: max(38px, calc(var(--fw) * 0.029px));
+  border-radius: 50%;
+  color: var(--nx-ink);
+  background: #fff;
+  box-shadow: 0 8px 18px -8px rgba(30, 44, 120, 0.45);
+  transition: background-color 0.3s var(--nx-ease), color 0.3s var(--nx-ease);
+}
+.nx-step__cta svg { width: 45%; height: 45%; }
+.nx-step__cta:hover {
+  background: var(--nx-ink);
+  color: #fff;
+}
+.nx-step__cta:focus-visible {
+  outline: 2px solid var(--nx-blue);
+  outline-offset: 3px;
+}
+
+/* Perks bar */
+.nx-process__perks-wrap {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 4.5%;
+  transform: translateX(-50%);
+}
+.nx-perks {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 18px 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--nx-shadow-md);
+}
+.nx-perks li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 4px 20px;
+}
+.nx-perks li + li {
+  border-left: 1px solid var(--nx-line);
+}
+.nx-perks__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: var(--nx-blue);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 20px -10px rgba(52, 87, 238, 0.5);
+}
+.nx-perks__icon svg { width: 24px; height: 24px; }
+.nx-perks strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--nx-ink);
+}
+.nx-perks li span > span {
+  display: block;
+  font-size: 13.5px;
+  color: var(--nx-text);
+}
+
+/* ---------- Stacked layout ---------- */
+@media (max-width: 1100px) {
+  .nx-process {
+    height: auto;
+    min-height: 0;
+    padding: 0 0 96px;
+  }
+  .nx-process__bg img {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+    object-fit: cover;
+    object-position: 60% 100%;
+  }
+  .nx-process__veil {
+    background: linear-gradient(180deg, rgba(243, 245, 251, 0.92) 0%, rgba(243, 245, 251, 0.55) 45%, rgba(243, 245, 251, 0.7) 100%);
+  }
+  .nx-process__head { padding-top: 96px; }
+  .nx-process__frame {
+    position: relative;
+    inset: auto !important;
+    width: auto !important;
+    height: auto !important;
+    --fw: 1200 !important;
+    max-width: 1320px;
+    margin: 48px auto 0;
+    padding: 0 40px;
+  }
+  .nx-steps {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 34px 22px;
+    counter-reset: step;
+  }
+  .nx-step {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    display: flex;
+  }
+  .nx-step__card {
+    width: 100%;
+    padding: 26px 24px 22px;
+    border-radius: 22px;
+    animation: none;
+  }
+  .nx-process__perks-wrap {
+    position: static;
+    transform: none;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nx-process { padding-bottom: 80px; }
+  .nx-process__head { padding-top: 88px; }
+  .nx-eyebrow--lines::before,
+  .nx-eyebrow--lines::after { width: 28px; }
+  .nx-process__frame { padding: 0 20px; margin-top: 40px; }
+  .nx-steps { grid-template-columns: 1fr; gap: 30px; }
+  .nx-step__title { font-size: 20px; }
+  .nx-step__text { font-size: 14.5px; }
+  .nx-perks {
+    grid-template-columns: 1fr;
+    border-radius: 24px;
+    padding: 10px 18px;
+  }
+  .nx-perks li { justify-content: flex-start; padding: 12px 4px; }
+  .nx-perks li + li { border-left: 0; border-top: 1px solid var(--nx-line); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nx-step__card { animation: none; }
+}
