@@ -41,7 +41,7 @@ function ExternalIcon() {
   );
 }
 
-function ProjectCard({ p, index, variant }: { p: PortfolioProject; index: number; variant: "featured" | "wide" | "normal" }) {
+export function ProjectCard({ p, index, variant }: { p: PortfolioProject; index: number; variant: "featured" | "wide" | "normal" }) {
   return (
     <article className={`nx-pcard nx-pcard--${variant}`}>
       <a className="nx-pcard__shot" href={p.url} target="_blank" rel="noopener noreferrer" tabIndex={-1} aria-hidden="true">

@@ -1,11 +1,9 @@
-import { useRef, type CSSProperties } from "react";
+import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import MagneticNX from "./MagneticNX";
-import { useCoverFrame } from "./useCoverFrame";
 import { whatsappLink } from "../../lib/whatsapp";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const BG_RATIO = 2073 / 758;
 
 const stroke = { stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
@@ -52,6 +50,55 @@ const PERKS = [
   },
 ];
 
+const TOPICS = [
+  {
+    title: "Sitio web profesional",
+    text: "Tu negocio con una presencia digital moderna y efectiva.",
+    service: "Página web",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="12.5" rx="1.6" {...stroke} />
+        <path d="M9 20h6M12 16.5V20" {...stroke} />
+      </svg>
+    ),
+  },
+  {
+    title: "Automatización",
+    text: "Ahorra tiempo y enfócate en lo importante.",
+    service: "Automatización de procesos",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="3" {...stroke} />
+        <path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5" {...stroke} />
+        <circle cx="12" cy="12" r="6.5" {...stroke} />
+      </svg>
+    ),
+  },
+  {
+    title: "Soluciones a medida",
+    text: "Herramientas ajustadas a las necesidades de tu negocio.",
+    service: "Soluciones digitales a la medida",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="12" width="4" height="8" rx="1" {...stroke} />
+        <rect x="10" y="8" width="4" height="12" rx="1" {...stroke} />
+        <rect x="16" y="4" width="4" height="16" rx="1" {...stroke} />
+      </svg>
+    ),
+  },
+  {
+    title: "Asesoría y estrategia",
+    text: "Te ayudamos a definir el mejor camino para tu proyecto.",
+    service: "Consultoría tecnológica",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="9" cy="8" r="3.5" {...stroke} />
+        <path d="M3 19.5c.6-3.2 3-5 6-5s5.4 1.8 6 5M15.5 5a3.5 3.5 0 0 1 0 6.5M18 14.8c1.6.8 2.6 2.4 3 4.7" {...stroke} />
+      </svg>
+    ),
+  },
+];
+
 function Arrow() {
   return (
     <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -62,95 +109,65 @@ function Arrow() {
 
 export default function ContactoNX() {
   const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.25 });
+  const inView = useInView(ref, { once: true, amount: 0.3 });
   const reduce = !!useReducedMotion();
-  const frame = useCoverFrame(ref, BG_RATIO, 0.62, 1);
-
-  const frameStyle = {
-    width: frame.width,
-    height: frame.height,
-    left: frame.left,
-    top: frame.top,
-    "--fw": frame.width,
-  } as CSSProperties;
 
   return (
     <section ref={ref} id="contacto" className="nx-contact">
-      <picture className="nx-contact__bg" aria-hidden="true">
-        <source media="(max-width: 900px)" srcSet="/images/cta-bg-900.webp" />
-        <img src="/images/cta-bg.webp" alt="" loading="lazy" decoding="async" />
-      </picture>
-
-      {/* Glass WhatsApp tile standing on the pedestal of the photo */}
-      <div className="nx-contact__frame" style={frameStyle} aria-hidden="true">
-        <motion.div
-          className="nx-wa-tile"
-          initial={reduce ? { opacity: 0 } : { opacity: 0, y: -60, rotate: -6 }}
-          animate={inView ? { opacity: 1, y: 0, rotate: 0 } : undefined}
-          transition={{ type: "spring", stiffness: 90, damping: 14, delay: 0.5 }}
-        >
-          <div className="nx-wa-tile__inner">
-            <WhatsAppGlyph />
-          </div>
-        </motion.div>
-        <motion.div
-          className="nx-wa-bubble"
-          initial={{ opacity: 0, scale: 0.85, y: 10 }}
-          animate={inView ? { opacity: 1, scale: 1, y: 0 } : undefined}
-          transition={{ duration: 0.7, delay: 1.1, ease: EASE }}
-        >
-          <span className="nx-wa-bubble__dot" />
-          <strong>¡Hablemos!</strong>
-          <span>Estamos listos para ayudarte.</span>
-          <svg viewBox="0 0 24 24" fill="none" className="nx-wa-bubble__send">
-            <path d="M20.5 3.5 3.5 10.5l6.5 2.5 2.5 6.5 8-16Z" {...stroke} />
-            <path d="m10 13 4.5-4.5" {...stroke} />
-          </svg>
-        </motion.div>
-      </div>
-
-      <div className="nx-container">
-        <motion.div
-          className="nx-contact__panel"
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 1, ease: EASE }}
-        >
-          <p className="nx-eyebrow nx-eyebrow--line">Construyamos juntos</p>
+      <div className="nx-container nx-contact__grid">
+        <div className="nx-contact__main">
+          <motion.p
+            className="nx-eyebrow nx-eyebrow--line"
+            initial={{ opacity: 0, y: 10 }}
+            animate={inView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.7, ease: EASE }}
+          >
+            Empecemos tu proyecto
+          </motion.p>
           <h2 className="nx-contact__title" aria-label="¿Listo para llevar tu negocio al siguiente nivel?">
             <span className="nx-mask" aria-hidden="true">
               <motion.span
                 className="nx-mask__line"
                 initial={reduce ? false : { y: "108%" }}
                 animate={inView ? { y: "0%" } : undefined}
-                transition={{ duration: 1, delay: 0.2, ease: EASE }}
+                transition={{ duration: 1, delay: 0.1, ease: EASE }}
               >
-                ¿Listo para llevar tu negocio
+                ¿Listo para llevar
               </motion.span>
             </span>
             <span className="nx-mask" aria-hidden="true">
               <motion.span
-                className="nx-mask__line nx-hero__line--blue"
+                className="nx-mask__line"
                 initial={reduce ? false : { y: "108%" }}
                 animate={inView ? { y: "0%" } : undefined}
-                transition={{ duration: 1, delay: 0.32, ease: EASE }}
+                transition={{ duration: 1, delay: 0.22, ease: EASE }}
               >
-                al siguiente nivel?
+                <span className="nx-hero__line--blue">tu negocio</span> al siguiente nivel?
               </motion.span>
             </span>
           </h2>
-          <p className="nx-contact__lead">
-            Hablemos hoy sin compromiso. Cuéntanos tu idea y recibe una asesoría personalizada para
-            encontrar la mejor solución para tu negocio.
-          </p>
+          <motion.p
+            className="nx-contact__lead"
+            initial={{ opacity: 0, y: 14 }}
+            animate={inView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
+          >
+            Cuéntanos tu idea y recibe una asesoría personalizada, sin compromiso. Estamos aquí para
+            ayudarte a convertir tus ideas en resultados.
+          </motion.p>
 
-          <div className="nx-contact__ctas">
+          <motion.div
+            className="nx-contact__ctas"
+            initial={{ opacity: 0, y: 14 }}
+            animate={inView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
+          >
             <MagneticNX>
               <a
                 href={whatsappLink("Hola, quiero llevar mi negocio al siguiente nivel con NEXIX")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="nx-btn nx-btn--blue nx-btn--lg"
+                className="nx-btn nx-btn--whatsapp nx-btn--lg"
               >
                 <WhatsAppGlyph className="nx-btn__wa" />
                 Hablemos por WhatsApp
@@ -166,18 +183,18 @@ export default function ContactoNX() {
               >
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="nx-btn__cal">
                   <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" {...stroke} />
-                  <path d="M3.5 10h17M8 3v4M16 3v4M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01" {...stroke} />
+                  <path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4" {...stroke} />
                 </svg>
                 Agendar una llamada
               </a>
             </MagneticNX>
-          </div>
+          </motion.div>
 
           <motion.ul
             className="nx-contact__perks"
             initial="hidden"
             animate={inView ? "show" : "hidden"}
-            variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.6 } } }}
+            variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.5 } } }}
           >
             {PERKS.map((p) => (
               <motion.li
@@ -195,6 +212,36 @@ export default function ContactoNX() {
               </motion.li>
             ))}
           </motion.ul>
+        </div>
+
+        <motion.div
+          className="nx-topics"
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
+        >
+          <p className="nx-eyebrow nx-eyebrow--line nx-topics__label">¿Sobre qué podemos hablar?</p>
+          <ul className="nx-topics__grid">
+            {TOPICS.map((t, i) => (
+              <motion.li
+                key={t.title}
+                initial={{ opacity: 0, y: 18 }}
+                animate={inView ? { opacity: 1, y: 0 } : undefined}
+                transition={{ duration: 0.7, delay: 0.35 + i * 0.08, ease: EASE }}
+              >
+                <a
+                  className="nx-topic"
+                  href={whatsappLink(`Hola, me interesa el servicio de ${t.service}`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="nx-topic__icon">{t.icon}</span>
+                  <strong>{t.title}</strong>
+                  <span>{t.text}</span>
+                </a>
+              </motion.li>
+            ))}
+          </ul>
         </motion.div>
       </div>
     </section>

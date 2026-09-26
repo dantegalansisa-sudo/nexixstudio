@@ -4,6 +4,7 @@ import NavbarNX from "./components/nx/NavbarNX";
 import FooterNX from "./components/nx/FooterNX";
 import { WhatsAppGlyph } from "./components/nx/ContactoNX";
 import Home from "./pages/Home";
+import ServicePage from "./pages/ServicePage";
 import { whatsappLink } from "./lib/whatsapp";
 
 function ScrollManager() {
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           {/* Old multi-page URLs now live as sections of the home page */}
           <Route path="/servicios" element={<Navigate to="/#servicios" replace />} />
+          <Route path="/servicios/:slug" element={<ServicePage />} />
           <Route path="/nosotros" element={<Navigate to="/#proceso" replace />} />
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />

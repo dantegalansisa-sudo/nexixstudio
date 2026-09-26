@@ -65,6 +65,7 @@ export default function NavbarNX() {
   }, [open]);
 
   function isActive(l: (typeof links)[number]) {
+    if (l.section === "servicios" && pathname.startsWith("/servicios/")) return true;
     if (l.section) return pathname === "/" && activeSection === l.section;
     return pathname === l.to;
   }

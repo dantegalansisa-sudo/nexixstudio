@@ -1,98 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, useInView, useReducedMotion, type PanInfo } from "framer-motion";
 import MagneticNX from "./MagneticNX";
-import { whatsappLink } from "../../lib/whatsapp";
+import { SERVICES, servicePath, type Service } from "../../data/services";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-type Service = {
-  key: string;
-  title: [string, string];
-  service: string; // name used in the WhatsApp message
-  description: string;
-  image: string;
-  crop: { zoom: number; x: number; y: number }; // zoom + origin (%) that frames the device, not the baked-in text panel
-  icon: ReactNode;
-  accent?: boolean;
-};
-
-const stroke = { stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" } as const;
-
-// Visual order follows the mockup: Automatización sits in the center.
-const SERVICES: Service[] = [
-  {
-    key: "estrategia",
-    title: ["Estrategia", "digital"],
-    service: "Estrategia digital",
-    description: "Planificación para impulsar tu presencia y alcanzar tus objetivos.",
-    image: "/images/servicio-estrategia-digital.webp",
-    crop: { zoom: 2, x: 100, y: 45 },
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <circle cx="12" cy="12" r="8.5" {...stroke} />
-        <circle cx="12" cy="12" r="4.5" {...stroke} />
-        <path d="M12 12 20 4m-3 0h3v3" {...stroke} />
-      </svg>
-    ),
-  },
-  {
-    key: "web",
-    title: ["Páginas web", "profesionales"],
-    service: "Página web",
-    description: "Sitios modernos, rápidos y diseñados para convertir visitantes en clientes.",
-    image: "/images/servicio-pagina-web.webp",
-    crop: { zoom: 1.7, x: 92, y: 45 },
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="3" y="4" width="18" height="12.5" rx="1.6" {...stroke} />
-        <path d="M9 20h6M12 16.5V20M7 8.5h6M7 11.5h4" {...stroke} />
-      </svg>
-    ),
-  },
-  {
-    key: "automatizacion",
-    title: ["Automatización", "de procesos"],
-    service: "Automatización de procesos",
-    description: "Soluciones inteligentes que ahorran tiempo y aumentan la productividad.",
-    image: "/images/servicio-automatizacion.webp",
-    crop: { zoom: 1.7, x: 87, y: 42 },
-    accent: true,
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M13 2.5 4.5 13.5H11l-1 8 8.5-11H12l1-8Z" {...stroke} />
-      </svg>
-    ),
-  },
-  {
-    key: "medida",
-    title: ["Soluciones digitales", "a la medida"],
-    service: "Soluciones digitales a la medida",
-    description: "Desarrollos personalizados para las necesidades específicas de tu negocio.",
-    image: "/images/servicio-soluciones-medida.webp",
-    crop: { zoom: 1.65, x: 91, y: 48 },
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <rect x="4" y="12" width="4" height="8" rx="1" {...stroke} />
-        <rect x="10" y="8" width="4" height="12" rx="1" {...stroke} />
-        <rect x="16" y="4" width="4" height="16" rx="1" {...stroke} />
-      </svg>
-    ),
-  },
-  {
-    key: "consultoria",
-    title: ["Consultoría", "tecnológica"],
-    service: "Consultoría tecnológica",
-    description: "Te acompañamos en cada etapa para tomar las mejores decisiones digitales.",
-    image: "/images/servicio-consultoria.webp",
-    crop: { zoom: 1.9, x: 99, y: 45 },
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M10 3.5c.5 3.9 2.6 6 6.5 6.5-3.9.5-6 2.6-6.5 6.5-.5-3.9-2.6-6-6.5-6.5 3.9-.5 6-2.6 6.5-6.5Z" {...stroke} />
-        <path d="M18 14.5c.25 1.9 1.1 2.75 3 3-1.9.25-2.75 1.1-3 3-.25-1.9-1.1-2.75-3-3 1.9-.25 2.75-1.1 3-3Z" {...stroke} />
-      </svg>
-    ),
-  },
-];
 
 const N = SERVICES.length;
 const START = 2;
@@ -152,20 +64,18 @@ function ServiceCard({
         <p className="nx-scard__text">{s.description}</p>
         <div className="nx-scard__footer">
           <MagneticNX strength={0.3}>
-            <a
+            <Link
               className="nx-scard__cta"
-              href={whatsappLink(`Hola, me interesa el servicio de ${s.service}`)}
-              target="_blank"
-              rel="noopener noreferrer"
+              to={servicePath(s)}
               tabIndex={active ? 0 : -1}
-              aria-label={`Conoce más sobre ${s.service} por WhatsApp`}
+              aria-label={`Conoce más sobre ${s.service}`}
               onClick={(e) => e.stopPropagation()}
             >
               <span className="nx-scard__cta-label">Conoce más</span>
               <span className="nx-scard__cta-circle">
                 <Arrow />
               </span>
-            </a>
+            </Link>
           </MagneticNX>
         </div>
       </div>

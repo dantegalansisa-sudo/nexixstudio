@@ -2,6 +2,12 @@ import { Link } from "react-router-dom";
 import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
 import { WhatsAppGlyph } from "./ContactoNX";
+import { SERVICES, servicePath } from "../../data/services";
+
+// Footer lists services in order of importance
+const FOOTER_SERVICES = ["web", "automatizacion", "medida", "estrategia", "consultoria"].map(
+  (k) => SERVICES.find((s) => s.key === k)!
+);
 
 const NAV = [
   { to: "/#servicios", label: "Servicios" },
@@ -11,13 +17,6 @@ const NAV = [
   { to: "/#contacto", label: "Contacto" },
 ];
 
-const SERVICES = [
-  "Páginas web profesionales",
-  "Automatización de procesos",
-  "Soluciones digitales a la medida",
-  "Estrategia digital",
-  "Consultoría tecnológica",
-];
 
 export default function FooterNX() {
   const year = new Date().getFullYear();
@@ -60,9 +59,9 @@ export default function FooterNX() {
 
           <div className="nx-footer__col">
             <h3>Servicios</h3>
-            {SERVICES.map((s) => (
-              <Link key={s} to="/#servicios">
-                {s}
+            {FOOTER_SERVICES.map((s) => (
+              <Link key={s.slug} to={servicePath(s)}>
+                {s.title.join(" ")}
               </Link>
             ))}
           </div>

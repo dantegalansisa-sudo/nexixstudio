@@ -8,6 +8,7 @@ import "./styles/nx-services.css";
 import "./styles/nx-portfolio.css";
 import "./styles/nx-process.css";
 import "./styles/nx-closing.css";
+import "./styles/nx-service-page.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
