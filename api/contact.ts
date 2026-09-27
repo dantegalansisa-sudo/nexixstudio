@@ -22,6 +22,9 @@ const SERVICES = new Set([
   "Otro",
 ]);
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const WHATSAPP_URL = "https://wa.me/18295234738";
+
 const LIMITS = { nombre: 100, email: 150, telefono: 40, mensaje: 3000 };
 const MIN_FILL_MS = 3000; // faster than this is almost certainly a bot
 
@@ -65,7 +68,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const errors: string[] = [];
   if (nombre.length < 2 || nombre.length > LIMITS.nombre) errors.push("Escribe tu nombre.");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > LIMITS.email)
+  if (!EMAIL_RE.test(email) || email.length > LIMITS.email)
     errors.push("Escribe un email válido.");
   if (telefono && (telefono.length > LIMITS.telefono || !/^[+\d\s().-]{7,}$/.test(telefono)))
     errors.push("Revisa el número de teléfono.");
@@ -149,6 +152,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         debug: { status, name: error.name, message: error.message },
       });
     }
+
+    // Confirmation to the client. Their message already reached us, so a
+    // failure here is only logged and never fails the response.
+    if (EMAIL_RE.test(email)) {
+      try {
+        const confirmation = await resend.emails.send({
+          from: FROM_EMAIL,
+          to: [email],
+          replyTo: TO_EMAIL,
+          subject: "Recibimos tu mensaje – NEXIX Tech Studio",
+          html: confirmationHtml(e.nombre.split(" ")[0], e.servicio),
+          text: confirmationText(nombre.split(" ")[0], servicio),
+        });
+        if (confirmation.error) console.error("[CONTACT] Confirmation email error", confirmation.error);
+      } catch (confirmErr) {
+        console.error("[CONTACT] Confirmation email failed", confirmErr);
+      }
+    }
+
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("[CONTACT] Unexpected error", err);
@@ -166,4 +188,59 @@ function safeJson(raw: string) {
   } catch {
     return null;
   }
+}
+
+/** Client confirmation email: table layout + inline styles for email clients. */
+function confirmationHtml(firstName: string, servicio: string) {
+  const serviceLine = servicio
+    ? `<p style="margin:0 0 16px;font-size:15px;line-height:24px;color:#4a5273;">Servicio de interés: <strong style="color:#0b1233;">${servicio}</strong></p>`
+    : "";
+  return `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Recibimos tu mensaje</title></head>
+<body style="margin:0;padding:0;background-color:#f3f5fb;">
+  <div style="display:none;max-height:0;overflow:hidden;">Gracias por escribirnos, te responderemos en menos de 24 horas.</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f5fb;">
+    <tr><td align="center" style="padding:32px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background-color:#ffffff;border-radius:16px;overflow:hidden;font-family:'Segoe UI',Helvetica,Arial,sans-serif;">
+        <tr><td style="background-color:#0b1233;padding:28px 32px;">
+          <p style="margin:0;font-size:22px;font-weight:800;letter-spacing:4px;color:#ffffff;">NEXIX</p>
+          <p style="margin:6px 0 0;font-size:13px;color:#aebcff;">Tech Studio · Santo Domingo, RD</p>
+        </td></tr>
+        <tr><td style="height:4px;background-color:#3457ee;line-height:4px;font-size:0;">&nbsp;</td></tr>
+        <tr><td style="padding:32px;">
+          <h1 style="margin:0 0 16px;font-size:22px;line-height:30px;font-weight:700;color:#0b1233;">¡Hola, ${firstName}!</h1>
+          <p style="margin:0 0 16px;font-size:15px;line-height:24px;color:#4a5273;">Gracias por escribirnos. Recibimos tu solicitud y nuestro equipo ya la está revisando.</p>
+          ${serviceLine}
+          <p style="margin:0 0 24px;font-size:15px;line-height:24px;color:#4a5273;">Te responderemos en <strong style="color:#0b1233;">menos de 24 horas</strong>. Si necesitas algo antes, puedes escribirnos por WhatsApp o responder a este correo.</p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+            <td style="border-radius:999px;background-color:#16a34a;">
+              <a href="${WHATSAPP_URL}" target="_blank" style="display:inline-block;padding:12px 26px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:999px;">Escríbenos por WhatsApp</a>
+            </td>
+          </tr></table>
+        </td></tr>
+        <tr><td style="padding:20px 32px;border-top:1px solid #eef1f8;">
+          <p style="margin:0;font-size:12px;line-height:18px;color:#9aa3bd;">NEXIX Tech Studio · Diseño web y automatización con IA<br><a href="https://www.nexixstudio.com" style="color:#3457ee;text-decoration:none;">nexixstudio.com</a> · +1 (829) 523-4738</p>
+          <p style="margin:8px 0 0;font-size:11px;line-height:16px;color:#b3bad0;">Recibes este correo porque enviaste el formulario de contacto de nexixstudio.com.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+function confirmationText(firstName: string, servicio: string) {
+  return [
+    `¡Hola, ${firstName}!`,
+    "",
+    "Gracias por escribirnos. Recibimos tu solicitud y nuestro equipo ya la está revisando.",
+    servicio ? `Servicio de interés: ${servicio}` : "",
+    "",
+    "Te responderemos en menos de 24 horas. Si necesitas algo antes, escríbenos por WhatsApp: " + WHATSAPP_URL,
+    "",
+    "NEXIX Tech Studio · nexixstudio.com · +1 (829) 523-4738",
+  ]
+    .filter((l, i, a) => !(l === "" && a[i - 1] === ""))
+    .join("\n");
 }
