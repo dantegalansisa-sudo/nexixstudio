@@ -73,3 +73,8 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* Anchor jumps land below the fixed navbar */
+main section[id] {
+  scroll-margin-top: 64px;
+}

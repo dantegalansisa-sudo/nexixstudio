@@ -54,7 +54,7 @@ export default function FaqNX() {
 
   const titleLines = [
     { text: "Todo lo que", tone: "ink" },
-    { text: "necesitas saber", tone: "blue" },
+    { text: "necesitas saber", tone: "orange" },
     { text: "antes de empezar", tone: "ink" },
   ];
 
@@ -62,7 +62,7 @@ export default function FaqNX() {
     <section ref={ref} id="preguntas" className="nx-faq">
       <picture className="nx-faq__bg" aria-hidden="true">
         <source media="(max-width: 900px)" srcSet="/images/faq-bg-900.webp" />
-        <img src="/images/faq-bg.webp" alt="" loading="lazy" decoding="async" />
+        <img src="/images/faq-bg.webp" alt="" loading="lazy" decoding="async" width="1672" height="941" />
       </picture>
       <div className="nx-faq__veil" aria-hidden="true" />
 
@@ -80,7 +80,7 @@ export default function FaqNX() {
             {titleLines.map((l, i) => (
               <span key={l.text} className="nx-mask" aria-hidden="true">
                 <motion.span
-                  className={`nx-mask__line nx-hero__line--${l.tone}`}
+                  className={`nx-mask__line ${l.tone === "orange" ? "nx-line--orange" : ""}`}
                   initial={reduce ? false : { y: "108%" }}
                   animate={inView ? { y: "0%" } : undefined}
                   transition={{ duration: 1, delay: 0.1 + i * 0.12, ease: EASE }}
@@ -155,7 +155,8 @@ export default function FaqNX() {
                     <span className="nx-acc__q">{f.q}</span>
                     <span className="nx-acc__toggle" aria-hidden="true">
                       <svg viewBox="0 0 20 20" fill="none">
-                        <path d="M10 4.5v11M4.5 10h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        <path d="M4.5 10h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        <path className="nx-acc__plus" d="M10 4.5v11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                       </svg>
                     </span>
                   </button>

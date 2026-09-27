@@ -1,11 +1,25 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
 import { PORTFOLIO, PORTFOLIO_FILTERS, displayHost, type PortfolioProject } from "../../data/portfolio";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const COLLAPSED_COUNT = 6;
+// Projects shown before "Ver más": fewer on phones so the section stays short
+const COLLAPSED_DESKTOP = 6;
+const COLLAPSED_MOBILE = 2;
+
+function useIsPhone() {
+  const query = "(max-width: 640px)";
+  const [match, setMatch] = useState(() => typeof window !== "undefined" && window.matchMedia(query).matches);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const on = () => setMatch(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return match;
+}
 
 type FilterKey = (typeof PORTFOLIO_FILTERS)[number]["key"];
 
@@ -107,8 +121,9 @@ export default function PortafolioNX() {
     () => (filter === "todos" ? PORTFOLIO : PORTFOLIO.filter((p) => p.category === filter)),
     [filter]
   );
-  const collapsible = filter === "todos" && PORTFOLIO.length > COLLAPSED_COUNT;
-  const visible = collapsible && !expanded ? filtered.slice(0, COLLAPSED_COUNT) : filtered;
+  const collapsedCount = useIsPhone() ? COLLAPSED_MOBILE : COLLAPSED_DESKTOP;
+  const collapsible = filter === "todos" && PORTFOLIO.length > collapsedCount;
+  const visible = collapsible && !expanded ? filtered.slice(0, collapsedCount) : filtered;
 
   function variantFor(i: number): "featured" | "wide" | "normal" {
     if (i !== 0) return "normal";
@@ -272,7 +287,7 @@ export default function PortafolioNX() {
         {collapsible && !expanded && (
           <div className="nx-portfolio__more">
             <button type="button" className="nx-btn nx-btn--glass" onClick={() => setExpanded(true)}>
-              Ver {PORTFOLIO.length - COLLAPSED_COUNT} proyectos más
+              Ver {PORTFOLIO.length - collapsedCount} proyectos más
             </button>
           </div>
         )}

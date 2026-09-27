@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
+import ContactFormNX from "./ContactFormNX";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -50,11 +50,10 @@ const PERKS = [
   },
 ];
 
+// Service choices in the form — values must match SERVICES in api/contact.ts
 const TOPICS = [
   {
     title: "Sitio web profesional",
-    text: "Tu negocio con una presencia digital moderna y efectiva.",
-    service: "Página web",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <rect x="3" y="4" width="18" height="12.5" rx="1.6" {...stroke} />
@@ -63,9 +62,7 @@ const TOPICS = [
     ),
   },
   {
-    title: "Automatización",
-    text: "Ahorra tiempo y enfócate en lo importante.",
-    service: "Automatización de procesos",
+    title: "Automatización con IA",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="12" cy="12" r="3" {...stroke} />
@@ -75,9 +72,7 @@ const TOPICS = [
     ),
   },
   {
-    title: "Soluciones a medida",
-    text: "Herramientas ajustadas a las necesidades de tu negocio.",
-    service: "Soluciones digitales a la medida",
+    title: "Soluciones a la medida",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <rect x="4" y="12" width="4" height="8" rx="1" {...stroke} />
@@ -87,9 +82,7 @@ const TOPICS = [
     ),
   },
   {
-    title: "Asesoría y estrategia",
-    text: "Te ayudamos a definir el mejor camino para tu proyecto.",
-    service: "Consultoría tecnológica",
+    title: "Estrategia y asesoría",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="9" cy="8" r="3.5" {...stroke} />
@@ -99,15 +92,7 @@ const TOPICS = [
   },
 ];
 
-function Arrow() {
-  return (
-    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="M4 10h11m0 0-4.5-4.5M15 10l-4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-export default function ContactoNX() {
+export default function ContactoNX({ defaultService = "" }: { defaultService?: string }) {
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
   const reduce = !!useReducedMotion();
@@ -156,39 +141,6 @@ export default function ContactoNX() {
             ayudarte a convertir tus ideas en resultados.
           </motion.p>
 
-          <motion.div
-            className="nx-contact__ctas"
-            initial={{ opacity: 0, y: 14 }}
-            animate={inView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 0.8, delay: 0.4, ease: EASE }}
-          >
-            <MagneticNX>
-              <a
-                href={whatsappLink("Hola, quiero llevar mi negocio al siguiente nivel con NEXIX")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nx-btn nx-btn--whatsapp nx-btn--lg"
-              >
-                <WhatsAppGlyph className="nx-btn__wa" />
-                Hablemos por WhatsApp
-                <Arrow />
-              </a>
-            </MagneticNX>
-            <MagneticNX>
-              <a
-                href={whatsappLink("Hola, quiero agendar una llamada con NEXIX. ¿Qué días tienen disponibles?")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="nx-btn nx-btn--glass nx-btn--lg"
-              >
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" className="nx-btn__cal">
-                  <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" {...stroke} />
-                  <path d="M3.5 10h17M8 3v4M16 3v4M9 15l2 2 4-4" {...stroke} />
-                </svg>
-                Agendar una llamada
-              </a>
-            </MagneticNX>
-          </motion.div>
 
           <motion.ul
             className="nx-contact__perks"
@@ -212,36 +164,35 @@ export default function ContactoNX() {
               </motion.li>
             ))}
           </motion.ul>
+
+          <motion.p
+            className="nx-contact__alt"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : undefined}
+            transition={{ duration: 0.8, delay: 0.7, ease: EASE }}
+          >
+            ¿Prefieres escribirnos directo?{" "}
+            <a
+              href={whatsappLink("Hola, quiero información sobre sus servicios")}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <WhatsAppGlyph className="nx-contact__alt-icon" />
+              Hablemos por WhatsApp
+            </a>
+          </motion.p>
         </div>
 
         <motion.div
-          className="nx-topics"
+          className="nx-contact__form"
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
         >
-          <p className="nx-eyebrow nx-eyebrow--line nx-topics__label">¿Sobre qué podemos hablar?</p>
-          <ul className="nx-topics__grid">
-            {TOPICS.map((t, i) => (
-              <motion.li
-                key={t.title}
-                initial={{ opacity: 0, y: 18 }}
-                animate={inView ? { opacity: 1, y: 0 } : undefined}
-                transition={{ duration: 0.7, delay: 0.35 + i * 0.08, ease: EASE }}
-              >
-                <a
-                  className="nx-topic"
-                  href={whatsappLink(`Hola, me interesa el servicio de ${t.service}`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span className="nx-topic__icon">{t.icon}</span>
-                  <strong>{t.title}</strong>
-                  <span>{t.text}</span>
-                </a>
-              </motion.li>
-            ))}
-          </ul>
+          <ContactFormNX
+            defaultService={defaultService}
+            options={[...TOPICS.map((t) => ({ value: t.title, icon: t.icon })), { value: "Otro" }]}
+          />
         </motion.div>
       </div>
     </section>

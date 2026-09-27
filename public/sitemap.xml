@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.nexixstudio.com/</loc></url>
-  <url><loc>https://www.nexixstudio.com/servicios/estrategia-digital</loc></url>
-  <url><loc>https://www.nexixstudio.com/servicios/pagina-web</loc></url>
-  <url><loc>https://www.nexixstudio.com/servicios/automatizacion-de-procesos</loc></url>
-  <url><loc>https://www.nexixstudio.com/servicios/soluciones-a-la-medida</loc></url>
-  <url><loc>https://www.nexixstudio.com/servicios/consultoria-tecnologica</loc></url>
+  <url><loc>https://www.nexixstudio.com/</loc><lastmod>2026-09-27</lastmod><priority>1.0</priority></url>
+  <url><loc>https://www.nexixstudio.com/servicios/estrategia-digital</loc><lastmod>2026-09-27</lastmod><priority>0.8</priority></url>
+  <url><loc>https://www.nexixstudio.com/servicios/pagina-web</loc><lastmod>2026-09-27</lastmod><priority>0.8</priority></url>
+  <url><loc>https://www.nexixstudio.com/servicios/automatizacion-de-procesos</loc><lastmod>2026-09-27</lastmod><priority>0.8</priority></url>
+  <url><loc>https://www.nexixstudio.com/servicios/soluciones-a-la-medida</loc><lastmod>2026-09-27</lastmod><priority>0.8</priority></url>
+  <url><loc>https://www.nexixstudio.com/servicios/consultoria-tecnologica</loc><lastmod>2026-09-27</lastmod><priority>0.8</priority></url>
+  <url><loc>https://www.nexixstudio.com/politica-de-privacidad</loc><lastmod>2026-09-27</lastmod><priority>0.3</priority></url>
+  <url><loc>https://www.nexixstudio.com/terminos-y-condiciones</loc><lastmod>2026-09-27</lastmod><priority>0.3</priority></url>
 </urlset>

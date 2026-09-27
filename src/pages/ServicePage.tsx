@@ -11,6 +11,15 @@ import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+// Service key → option preselected in the contact form
+const FORM_SERVICE: Record<string, string> = {
+  web: "Sitio web profesional",
+  automatizacion: "Automatización con IA",
+  medida: "Soluciones a la medida",
+  estrategia: "Estrategia y asesoría",
+  consultoria: "Estrategia y asesoría",
+};
+
 const reveal = {
   initial: { opacity: 0, y: 28 },
   whileInView: { opacity: 1, y: 0 },
@@ -325,7 +334,7 @@ function ServiceContent({ s }: { s: Service }) {
         </div>
       </section>
 
-      <ContactoNX />
+      <ContactoNX defaultService={FORM_SERVICE[s.key] ?? ""} />
     </motion.div>
   );
 }

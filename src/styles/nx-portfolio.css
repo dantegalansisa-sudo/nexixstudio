@@ -540,7 +540,8 @@
   .nx-portfolio { padding: 88px 0; }
   .nx-portfolio__title { font-size: clamp(32px, 9vw, 40px); }
   .nx-portfolio__all { display: none; }
-  .nx-portfolio__showcase > img { width: 150%; left: -58%; top: -6%; }
+  .nx-portfolio__showcase { aspect-ratio: 1.9; }
+  .nx-portfolio__showcase > img { width: 130%; left: -48%; top: -14%; }
   .nx-tabs {
     flex-wrap: nowrap;
     overflow-x: auto;

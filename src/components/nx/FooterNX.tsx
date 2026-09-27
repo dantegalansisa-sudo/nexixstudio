@@ -78,6 +78,10 @@ export default function FooterNX() {
 
         <div className="nx-footer__bottom">
           <p>© {year} NEXIX Studio. Todos los derechos reservados.</p>
+          <nav className="nx-footer__legal" aria-label="Legal">
+            <Link to="/politica-de-privacidad">Política de privacidad</Link>
+            <Link to="/terminos-y-condiciones">Términos y condiciones</Link>
+          </nav>
           <a
             href="#inicio"
             className="nx-footer__top-link"

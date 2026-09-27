@@ -176,7 +176,7 @@ export const SERVICES: Service[] = [
     service: "Automatización de procesos",
     description: "Soluciones inteligentes que ahorran tiempo y aumentan la productividad.",
     image: "/images/servicio-automatizacion.webp",
-    crop: { zoom: 1.7, x: 87, y: 42 },
+    crop: { zoom: 1.08, x: 40, y: 50 },
     accent: true,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -243,7 +243,7 @@ export const SERVICES: Service[] = [
     service: "Soluciones digitales a la medida",
     description: "Desarrollos personalizados para las necesidades específicas de tu negocio.",
     image: "/images/servicio-soluciones-medida.webp",
-    crop: { zoom: 1.65, x: 91, y: 48 },
+    crop: { zoom: 1.06, x: 72, y: 50 },
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <rect x="4" y="12" width="4" height="8" rx="1" {...stroke} />
@@ -308,7 +308,7 @@ export const SERVICES: Service[] = [
     service: "Consultoría tecnológica",
     description: "Te acompañamos en cada etapa para tomar las mejores decisiones digitales.",
     image: "/images/servicio-consultoria.webp",
-    crop: { zoom: 1.9, x: 99, y: 45 },
+    crop: { zoom: 1.12, x: 60, y: 45 },
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M10 3.5c.5 3.9 2.6 6 6.5 6.5-3.9.5-6 2.6-6.5 6.5-.5-3.9-2.6-6-6.5-6.5 3.9-.5 6-2.6 6.5-6.5Z" {...stroke} />

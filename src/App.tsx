@@ -1,10 +1,12 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import NavbarNX from "./components/nx/NavbarNX";
 import FooterNX from "./components/nx/FooterNX";
 import { WhatsAppGlyph } from "./components/nx/ContactoNX";
 import Home from "./pages/Home";
-import ServicePage from "./pages/ServicePage";
+// Secondary pages load on demand so the home page stays light
+const ServicePage = lazy(() => import("./pages/ServicePage"));
+const LegalPage = lazy(() => import("./pages/LegalPage"));
 import { whatsappLink } from "./lib/whatsapp";
 
 function ScrollManager() {
@@ -34,15 +36,19 @@ export default function App() {
       <ScrollManager />
       <NavbarNX />
       <main>
+        <Suspense fallback={<div className="nx-route-fallback" />}>
         <Routes>
           <Route path="/" element={<Home />} />
           {/* Old multi-page URLs now live as sections of the home page */}
           <Route path="/servicios" element={<Navigate to="/#servicios" replace />} />
           <Route path="/servicios/:slug" element={<ServicePage />} />
+          <Route path="/politica-de-privacidad" element={<LegalPage slug="politica-de-privacidad" />} />
+          <Route path="/terminos-y-condiciones" element={<LegalPage slug="terminos-y-condiciones" />} />
           <Route path="/nosotros" element={<Navigate to="/#proceso" replace />} />
           <Route path="/contacto" element={<Navigate to="/#contacto" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
       </main>
       <FooterNX />
       <a
