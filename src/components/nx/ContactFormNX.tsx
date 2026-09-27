@@ -81,6 +81,7 @@ export default function ContactFormNX({ options, defaultService = "" }: { option
         setStatus("success");
         return;
       }
+      if (data?.debug) console.error("[Contacto] Error del servidor:", data.debug);
       setServerErrors(data?.errors?.length ? data.errors : ["No pudimos enviar tu mensaje. Intenta de nuevo."]);
       setStatus("error");
     } catch {

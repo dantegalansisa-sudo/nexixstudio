@@ -7,13 +7,12 @@ import { Resend } from "resend";
  * Env vars (Vercel → Project → Settings → Environment Variables):
  *   RESEND_API_KEY  (required)
  *   TO_EMAIL        inbox that receives the leads (default nexixstudio@gmail.com)
- *   FROM_EMAIL      sender; must be on a domain verified in Resend.
- *                   Default "NEXIX Studio <onboarding@resend.dev>" only delivers
- *                   to the email of the Resend account owner.
+ *
+ * Sender uses nexixstudio.com, verified in Resend.
  */
 
 const TO_EMAIL = process.env.TO_EMAIL || "nexixstudio@gmail.com";
-const FROM_EMAIL = process.env.FROM_EMAIL || "NEXIX Studio <onboarding@resend.dev>";
+const FROM_EMAIL = "NEXIX <contacto@nexixstudio.com>";
 
 const SERVICES = new Set([
   "Sitio web profesional",
@@ -85,6 +84,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({
       ok: false,
       errors: ["No pudimos enviar tu mensaje en este momento. Escríbenos por WhatsApp."],
+      debug: { status: 500, message: "RESEND_API_KEY no está configurada en el servidor." },
     });
   }
 
@@ -141,9 +141,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
     if (error) {
       console.error("[CONTACT] Resend error", error);
-      return res.status(502).json({
+      // Pass Resend's real status + message through so failures can be debugged
+      const status = error.statusCode ?? 502;
+      return res.status(status >= 400 && status < 600 ? status : 502).json({
         ok: false,
         errors: ["No pudimos enviar tu mensaje. Intenta de nuevo o escríbenos por WhatsApp."],
+        debug: { status, name: error.name, message: error.message },
       });
     }
     return res.status(200).json({ ok: true });
@@ -152,6 +155,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({
       ok: false,
       errors: ["No pudimos enviar tu mensaje. Intenta de nuevo o escríbenos por WhatsApp."],
+      debug: { status: 500, message: err instanceof Error ? err.message : String(err) },
     });
   }
 }
