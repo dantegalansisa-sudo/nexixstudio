@@ -4,7 +4,7 @@
  * Conversions → (your WhatsApp conversion) → Tag setup.
  */
 export const GOOGLE_ADS_ID = "AW-17630335494";
-export const CONVERSION_LABEL = "CONVERSION_LABEL";
+export const CONVERSION_LABEL = "XxQZCPzm64kdEIak5tZB";
 
 declare global {
   interface Window {
