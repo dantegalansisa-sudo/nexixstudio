@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
+import { trackWhatsAppClick } from "../../lib/analytics";
 import { PORTFOLIO, PORTFOLIO_FILTERS, displayHost, type PortfolioProject } from "../../data/portfolio";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -305,7 +306,7 @@ export default function PortafolioNX() {
           </div>
           <MagneticNX>
             <a
-              href={whatsappLink("Hola, vi su portafolio y quiero una web para mi negocio")}
+              href={whatsappLink("Hola, vi su portafolio y quiero una web para mi negocio")} onClick={trackWhatsAppClick}
               target="_blank"
               rel="noopener noreferrer"
               className="nx-btn nx-btn--dark nx-btn--lg"

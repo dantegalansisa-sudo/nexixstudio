@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
+import { trackWhatsAppClick } from "../../lib/analytics";
 
 const links = [
   { to: "/", label: "Inicio", section: "inicio" },
@@ -95,7 +96,7 @@ export default function NavbarNX() {
           </nav>
 
           <MagneticNX className="nx-nav__cta-wrap" strength={0.25}>
-            <a href={whatsappLink("Hola, quiero hablar sobre un proyecto con NEXIX")} target="_blank" rel="noopener noreferrer" className="nx-btn nx-btn--dark nx-btn--sm">
+            <a href={whatsappLink("Hola, quiero hablar sobre un proyecto con NEXIX")} onClick={trackWhatsAppClick} target="_blank" rel="noopener noreferrer" className="nx-btn nx-btn--dark nx-btn--sm">
               Hablemos
               <ArrowRight />
             </a>
@@ -137,7 +138,7 @@ export default function NavbarNX() {
                 </motion.div>
               ))}
             </nav>
-            <a href={whatsappLink("Hola, quiero hablar sobre un proyecto con NEXIX")} target="_blank" rel="noopener noreferrer" className="nx-btn nx-btn--dark">
+            <a href={whatsappLink("Hola, quiero hablar sobre un proyecto con NEXIX")} onClick={trackWhatsAppClick} target="_blank" rel="noopener noreferrer" className="nx-btn nx-btn--dark">
               Hablemos por WhatsApp
               <ArrowRight />
             </a>

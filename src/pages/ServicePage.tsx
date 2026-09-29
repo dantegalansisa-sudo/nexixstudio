@@ -7,6 +7,7 @@ import { ProjectCard } from "../components/nx/PortafolioNX";
 import { SERVICES, getServiceBySlug, servicePath, type Service } from "../data/services";
 import { PORTFOLIO } from "../data/portfolio";
 import { whatsappLink } from "../lib/whatsapp";
+import { trackWhatsAppClick } from "../lib/analytics";
 import { useDocumentMeta } from "../hooks/useDocumentMeta";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -167,7 +168,7 @@ function ServiceContent({ s }: { s: Service }) {
               transition={{ duration: 0.8, delay: 0.5, ease: EASE }}
             >
               <MagneticNX>
-                <a href={wa} target="_blank" rel="noopener noreferrer" className="nx-btn nx-btn--whatsapp nx-btn--lg">
+                <a href={wa} onClick={trackWhatsAppClick} target="_blank" rel="noopener noreferrer" className="nx-btn nx-btn--whatsapp nx-btn--lg">
                   <WhatsAppGlyph className="nx-btn__wa" />
                   Cotizar por WhatsApp
                   <Arrow />
@@ -253,7 +254,7 @@ function ServiceContent({ s }: { s: Service }) {
                 </li>
               ))}
             </ul>
-            <a href={wa} target="_blank" rel="noopener noreferrer" className="nx-sp-ideal__link">
+            <a href={wa} onClick={trackWhatsAppClick} target="_blank" rel="noopener noreferrer" className="nx-sp-ideal__link">
               ¿Tu negocio encaja? Escríbenos
               <Arrow />
             </a>

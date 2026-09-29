@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
+import { trackWhatsAppClick } from "../../lib/analytics";
 import { WhatsAppGlyph } from "./ContactoNX";
 import { SERVICES, servicePath } from "../../data/services";
 
@@ -38,7 +39,7 @@ export default function FooterNX() {
             <MagneticNX strength={0.25}>
               <a
                 className="nx-btn nx-btn--light"
-                href={whatsappLink("Hola, quiero hablar sobre un proyecto con NEXIX")}
+                href={whatsappLink("Hola, quiero hablar sobre un proyecto con NEXIX")} onClick={trackWhatsAppClick}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -68,7 +69,7 @@ export default function FooterNX() {
 
           <div className="nx-footer__col">
             <h3>Contacto</h3>
-            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+            <a href={whatsappLink()} onClick={trackWhatsAppClick} target="_blank" rel="noopener noreferrer">
               +1 (829) 523-4738
             </a>
             <a href="mailto:nexixstudio@gmail.com">nexixstudio@gmail.com</a>

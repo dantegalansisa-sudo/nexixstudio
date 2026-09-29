@@ -2,6 +2,7 @@ import { useId, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
+import { trackWhatsAppClick } from "../../lib/analytics";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -115,7 +116,7 @@ export default function FaqNX() {
               <MagneticNX strength={0.2}>
                 <a
                   className="nx-faq__help-link"
-                  href={whatsappLink("Hola, tengo una pregunta sobre sus servicios")}
+                  href={whatsappLink("Hola, tengo una pregunta sobre sus servicios")} onClick={trackWhatsAppClick}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

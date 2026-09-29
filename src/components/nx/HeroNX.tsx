@@ -3,6 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import MagneticNX from "./MagneticNX";
 import { useCoverFrame } from "./useCoverFrame";
 import { whatsappLink } from "../../lib/whatsapp";
+import { trackWhatsAppClick } from "../../lib/analytics";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const HERO_RATIO = 1672 / 941;
@@ -183,7 +184,7 @@ export default function HeroNX() {
           >
             <MagneticNX>
               <a
-                href={whatsappLink("Hola, quiero cotizar un proyecto con NEXIX")}
+                href={whatsappLink("Hola, quiero cotizar un proyecto con NEXIX")} onClick={trackWhatsAppClick}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="nx-btn nx-btn--dark nx-btn--lg"

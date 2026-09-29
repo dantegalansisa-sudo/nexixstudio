@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 const ServicePage = lazy(() => import("./pages/ServicePage"));
 const LegalPage = lazy(() => import("./pages/LegalPage"));
 import { whatsappLink } from "./lib/whatsapp";
+import { trackWhatsAppClick } from "./lib/analytics";
 
 function ScrollManager() {
   const { pathname, hash, key } = useLocation();
@@ -52,7 +53,7 @@ export default function App() {
       </main>
       <FooterNX />
       <a
-        href={whatsappLink()}
+        href={whatsappLink()} onClick={trackWhatsAppClick}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escríbenos por WhatsApp"

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { whatsappLink } from "../../lib/whatsapp";
+import { trackWhatsAppClick } from "../../lib/analytics";
 import ContactFormNX from "./ContactFormNX";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -173,7 +174,7 @@ export default function ContactoNX({ defaultService = "" }: { defaultService?: s
           >
             ¿Prefieres escribirnos directo?{" "}
             <a
-              href={whatsappLink("Hola, quiero información sobre sus servicios")}
+              href={whatsappLink("Hola, quiero información sobre sus servicios")} onClick={trackWhatsAppClick}
               target="_blank"
               rel="noopener noreferrer"
             >

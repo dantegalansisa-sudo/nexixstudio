@@ -2,6 +2,7 @@ import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { whatsappLink } from "../../lib/whatsapp";
+import { trackWhatsAppClick } from "../../lib/analytics";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -278,7 +279,7 @@ export default function ContactFormNX({ options, defaultService = "" }: { option
                   {serverErrors.map((m) => (
                     <p key={m}>{m}</p>
                   ))}
-                  <a href={waFallback} target="_blank" rel="noopener noreferrer">
+                  <a href={waFallback} onClick={trackWhatsAppClick} target="_blank" rel="noopener noreferrer">
                     Enviar por WhatsApp
                     <Arrow />
                   </a>
