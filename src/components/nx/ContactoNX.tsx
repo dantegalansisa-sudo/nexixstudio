@@ -99,10 +99,14 @@ export default function ContactoNX({ defaultService = "" }: { defaultService?: s
   const reduce = !!useReducedMotion();
   // The form rises like a sheet while it scrolls into view
   const formRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: formP } = useScroll({ target: formRef, offset: ["start end", "start 0.35"] });
-  const formY = useTransform(formP, [0, 1], reduce ? [0, 0] : [160, 0]);
-  const formScale = useTransform(formP, [0, 1], reduce ? [1, 1] : [0.9, 1]);
-  const formOpacity = useTransform(formP, [0, 0.35], reduce ? [1, 1] : [0, 1]);
+  // It starts tilted back like a sheet lying on a desk and stands up with scroll
+  const { scrollYProgress: formP } = useScroll({ target: formRef, offset: ["start end", "start 0.28"] });
+  const formY = useTransform(formP, [0, 1], reduce ? [0, 0] : [120, 0]);
+  const formScale = useTransform(formP, [0, 1], reduce ? [1, 1] : [0.84, 1]);
+  const formTilt = useTransform(formP, [0, 1], reduce ? [0, 0] : [42, 0]);
+  const formOpacity = useTransform(formP, [0, 0.3], reduce ? [1, 1] : [0, 1]);
+  // Fields cascade in once the sheet is mostly up
+  const fieldsIn = useInView(formRef, { once: true, amount: 0.12 });
 
   return (
     <section ref={ref} id="contacto" className="nx-contact">
@@ -192,8 +196,8 @@ export default function ContactoNX({ defaultService = "" }: { defaultService?: s
 
         <motion.div
           ref={formRef}
-          className="nx-contact__form"
-          style={{ y: formY, scale: formScale, opacity: formOpacity }}
+          className={`nx-contact__form ${fieldsIn || reduce ? "is-in" : ""}`}
+          style={{ y: formY, scale: formScale, rotateX: formTilt, opacity: formOpacity, transformPerspective: 1100, transformOrigin: "50% 100%" }}
         >
           <ContactFormNX
             defaultService={defaultService}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useInView, useReducedMotion, type PanInfo } from "framer-motion";
+import { motion, useInView, useReducedMotion, useScroll, useTransform, type MotionValue, type PanInfo } from "framer-motion";
 import MagneticNX from "./MagneticNX";
 import { SERVICES, servicePath, type Service } from "../../data/services";
 import ScrubWords from "./ScrubWords";
@@ -196,9 +196,25 @@ function Coverflow({ inView, reduce }: { inView: boolean; reduce: boolean }) {
   );
 }
 
-function SnapRow({ inView, reduce }: { inView: boolean; reduce: boolean }) {
+/** Mobile card that starts stacked on the center card and spreads out with scroll. */
+function DeckItem({ i, progress, children }: { i: number; progress: MotionValue<number>; children: React.ReactNode }) {
+  const off = i - START;
+  const x = useTransform(progress, [0, 1], [`${-off * 104}%`, "0%"]);
+  const rotate = useTransform(progress, [0, 1], [off * 7, 0]);
+  const scale = useTransform(progress, [0, 1], [1 - Math.abs(off) * 0.07, 1]);
+  const y = useTransform(progress, [0, 1], [Math.abs(off) * 18 + 70, 0]);
+  return (
+    <motion.div className="nx-snap__item" style={{ x, rotate, scale, y, zIndex: 10 - Math.abs(off) }}>
+      {children}
+    </motion.div>
+  );
+}
+
+function SnapRow({ reduce }: { inView: boolean; reduce: boolean }) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(START);
+  // Deck spread: 0 = cards stacked on the center one, 1 = laid out in the row
+  const { scrollYProgress } = useScroll({ target: rowRef, offset: ["start end", "center 0.62"] });
 
   // Start centered on the featured card
   useEffect(() => {
@@ -234,22 +250,17 @@ function SnapRow({ inView, reduce }: { inView: boolean; reduce: boolean }) {
   return (
     <>
       <div ref={rowRef} className="nx-snap" onScroll={onScroll}>
-        {SERVICES.map((s, i) => (
-          <motion.div
-            key={s.key}
-            className="nx-snap__item"
-            initial={false}
-            // Cards fan in from the side like a dealt hand
-            animate={
-              inView || reduce
-                ? { opacity: 1, x: 0, rotate: 0, scale: 1 }
-                : { opacity: 0, x: 140 + Math.abs(i - START) * 40, rotate: 10, scale: 0.9 }
-            }
-            transition={{ type: "spring", stiffness: 90, damping: 16, delay: 0.15 + Math.abs(i - START) * 0.12 }}
-          >
-            <ServiceCard s={s} active onActivate={() => scrollToCard(i)} />
-          </motion.div>
-        ))}
+        {SERVICES.map((s, i) =>
+          reduce ? (
+            <div key={s.key} className="nx-snap__item">
+              <ServiceCard s={s} active onActivate={() => scrollToCard(i)} />
+            </div>
+          ) : (
+            <DeckItem key={s.key} i={i} progress={scrollYProgress}>
+              <ServiceCard s={s} active onActivate={() => scrollToCard(i)} />
+            </DeckItem>
+          )
+        )}
       </div>
       <div className="nx-dots" role="tablist" aria-label="Elegir servicio">
         {SERVICES.map((s, i) => (

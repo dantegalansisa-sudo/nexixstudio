@@ -1,10 +1,28 @@
-import { useId, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import { useId, useRef, useState, type ReactNode } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import MagneticNX from "./MagneticNX";
 import { whatsappLink } from "../../lib/whatsapp";
 import { trackWhatsAppClick } from "../../lib/analytics";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+/**
+ * "Zipper": each question slides in from alternating sides, tied to its own
+ * scroll position (it follows the finger instead of playing once).
+ */
+function ZipperItem({ i, className, reduce, children }: { i: number; className: string; reduce: boolean; children: ReactNode }) {
+  const ref = useRef<HTMLLIElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start 0.7"] });
+  const side = i % 2 === 0 ? -1 : 1;
+  const x = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : [`${side * 55}%`, "0%"]);
+  const rotate = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [side * -8, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [reduce ? 1 : 0, 1]);
+  return (
+    <motion.li ref={ref} className={className} style={{ x, rotate, opacity }}>
+      {children}
+    </motion.li>
+  );
+}
 
 const FAQS = [
   {
@@ -137,16 +155,7 @@ export default function FaqNX() {
             const btnId = `${baseId}-q${i}`;
             const panelId = `${baseId}-a${i}`;
             return (
-              <motion.li
-                key={f.q}
-                className={`nx-acc ${isOpen ? "is-open" : ""}`}
-                // Each question flips down in 3D as it reaches the screen
-                initial={reduce ? { opacity: 0 } : { opacity: 0, rotateX: -75, y: -10 }}
-                whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ duration: 0.75, delay: (i % 2) * 0.06, ease: EASE }}
-                style={{ transformOrigin: "50% 0%" }}
-              >
+              <ZipperItem key={f.q} i={i} reduce={reduce} className={`nx-acc ${isOpen ? "is-open" : ""}`}>
                 <h3>
                   <button
                     id={btnId}
@@ -182,7 +191,7 @@ export default function FaqNX() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.li>
+              </ZipperItem>
             );
           })}
         </ul>
