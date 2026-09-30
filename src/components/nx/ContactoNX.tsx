@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { whatsappLink } from "../../lib/whatsapp";
 import { trackWhatsAppClick } from "../../lib/analytics";
 import ContactFormNX from "./ContactFormNX";
@@ -97,6 +97,12 @@ export default function ContactoNX({ defaultService = "" }: { defaultService?: s
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
   const reduce = !!useReducedMotion();
+  // The form rises like a sheet while it scrolls into view
+  const formRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: formP } = useScroll({ target: formRef, offset: ["start end", "start 0.35"] });
+  const formY = useTransform(formP, [0, 1], reduce ? [0, 0] : [160, 0]);
+  const formScale = useTransform(formP, [0, 1], reduce ? [1, 1] : [0.9, 1]);
+  const formOpacity = useTransform(formP, [0, 0.35], reduce ? [1, 1] : [0, 1]);
 
   return (
     <section ref={ref} id="contacto" className="nx-contact">
@@ -185,10 +191,9 @@ export default function ContactoNX({ defaultService = "" }: { defaultService?: s
         </div>
 
         <motion.div
+          ref={formRef}
           className="nx-contact__form"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
+          style={{ y: formY, scale: formScale, opacity: formOpacity }}
         >
           <ContactFormNX
             defaultService={defaultService}

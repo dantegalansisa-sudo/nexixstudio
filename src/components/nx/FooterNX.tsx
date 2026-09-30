@@ -4,6 +4,7 @@ import { whatsappLink } from "../../lib/whatsapp";
 import { trackWhatsAppClick } from "../../lib/analytics";
 import { WhatsAppGlyph } from "./ContactoNX";
 import { SERVICES, servicePath } from "../../data/services";
+import { MOBILE_QUERY, useMediaQuery } from "../../hooks/useMediaQuery";
 
 // Footer lists services in order of importance
 const FOOTER_SERVICES = ["web", "automatizacion", "medida", "estrategia", "consultoria"].map(
@@ -21,6 +22,8 @@ const NAV = [
 
 export default function FooterNX() {
   const year = new Date().getFullYear();
+  // On phones the link lists collapse into accordions to keep the footer short
+  const isPhone = useMediaQuery(MOBILE_QUERY);
 
   return (
     <footer className="nx-footer">
@@ -49,25 +52,33 @@ export default function FooterNX() {
             </MagneticNX>
           </div>
 
-          <nav className="nx-footer__col" aria-label="Navegación del pie de página">
-            <h3>Navegación</h3>
-            {NAV.map((l) => (
-              <Link key={l.to} to={l.to}>
-                {l.label}
-              </Link>
-            ))}
-          </nav>
+          <details className="nx-footer__col nx-footer__acc" open={!isPhone} key={`nav-${isPhone}`}>
+            <summary>
+              <h3>Navegación</h3>
+            </summary>
+            <nav className="nx-footer__links" aria-label="Navegación del pie de página">
+              {NAV.map((l) => (
+                <Link key={l.to} to={l.to}>
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+          </details>
 
-          <div className="nx-footer__col">
-            <h3>Servicios</h3>
-            {FOOTER_SERVICES.map((s) => (
-              <Link key={s.slug} to={servicePath(s)}>
-                {s.title.join(" ")}
-              </Link>
-            ))}
-          </div>
+          <details className="nx-footer__col nx-footer__acc" open={!isPhone} key={`svc-${isPhone}`}>
+            <summary>
+              <h3>Servicios</h3>
+            </summary>
+            <div className="nx-footer__links">
+              {FOOTER_SERVICES.map((s) => (
+                <Link key={s.slug} to={servicePath(s)}>
+                  {s.title.join(" ")}
+                </Link>
+              ))}
+            </div>
+          </details>
 
-          <div className="nx-footer__col">
+          <div className="nx-footer__col nx-footer__contact">
             <h3>Contacto</h3>
             <a href={whatsappLink()} onClick={trackWhatsAppClick} target="_blank" rel="noopener noreferrer">
               +1 (829) 523-4738

@@ -1,6 +1,8 @@
 import { useRef, type CSSProperties, type ReactNode } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import MagneticNX from "./MagneticNX";
+import ProcesoPinned from "./ProcesoPinned";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useCoverFrame } from "./useCoverFrame";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -95,11 +97,30 @@ export default function ProcesoNX() {
     "--fw": frame.width,
   } as CSSProperties;
 
+  // Mobile/tablet: pinned horizontal scroll instead of the pedestal layout
+  const compact = useMediaQuery("(max-width: 1100px)");
+
   function goToContact(e: React.MouseEvent<HTMLAnchorElement>) {
     const target = document.getElementById("contacto");
     if (!target) return;
     e.preventDefault();
     target.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+  }
+
+  if (compact) {
+    return (
+      <ProcesoPinned
+        steps={STEPS}
+        eyebrow="Nuestro proceso"
+        title={
+          <>
+            Un proceso claro,
+            <br />
+            <span className="nx-line--orange">sin sorpresas</span>
+          </>
+        }
+      />
+    );
   }
 
   return (

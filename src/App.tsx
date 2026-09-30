@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { lazy, Suspense, useEffect, useState } from "react";
+import { motion, useScroll } from "framer-motion";
 import { MOBILE_QUERY, useMediaQuery } from "./hooks/useMediaQuery";
 import NavbarNX from "./components/nx/NavbarNX";
 import FooterNX from "./components/nx/FooterNX";
@@ -50,8 +51,10 @@ function useHideFloat() {
 
 export default function App() {
   const hideFloat = useHideFloat();
+  const { scrollYProgress } = useScroll();
   return (
     <>
+      <motion.div className="nx-progress" style={{ scaleX: scrollYProgress }} aria-hidden="true" />
       <ScrollManager />
       <NavbarNX />
       <main>

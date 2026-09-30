@@ -1,0 +1,165 @@
+/* ============================================
+   NEXIX — Scroll effects (one style per section)
+   ============================================ */
+
+/* Global reading progress */
+.nx-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1100;
+  height: 3px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--nx-blue) 0%, var(--nx-blue-2) 60%, #ff7a1a 100%);
+  pointer-events: none;
+}
+
+/* Servicios: words light up with scroll */
+.nx-scrub__word {
+  display: inline-block;
+  will-change: opacity, transform;
+}
+
+/* Preguntas: 3D flip-in needs depth */
+.nx-faq .nx-accordion { perspective: 1100px; }
+
+/* ---------- Proceso pinned (mobile / tablet) ---------- */
+.nx-process.nx-process--pin {
+  overflow: visible;
+  padding: 0;
+  max-height: none;
+  background: #0b0d14;
+}
+.nx-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(18px, 3.5svh, 32px);
+  padding-top: var(--nx-nav-h);
+  isolation: isolate;
+}
+.nx-pin__head {
+  text-align: center;
+}
+.nx-pin__head .nx-eyebrow { margin-bottom: 12px; }
+.nx-pin__head .nx-process__title { margin-bottom: 0; font-size: clamp(30px, 8.4vw, 46px); }
+.nx-pin__viewport { width: 100%; }
+.nx-pin__track {
+  --cw: min(78vw, 340px);
+  list-style: none;
+  display: flex;
+  gap: 16px;
+  padding: 8px calc((100vw - var(--cw)) / 2);
+  will-change: transform;
+}
+.nx-pin-card {
+  --tone: #ff7a1a;
+  --tone-bg: rgba(255, 237, 222, 0.95);
+  position: relative;
+  flex: 0 0 var(--cw);
+  display: flex;
+  flex-direction: column;
+  min-height: 230px;
+  padding: 24px 22px;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 242, 248, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.75);
+  will-change: transform, opacity;
+}
+.nx-pin-card.nx-step--lime { --tone: #8fb31a; --tone-bg: rgba(240, 247, 214, 0.95); }
+.nx-pin-card.nx-step--blue { --tone: #2f6bff; --tone-bg: rgba(226, 236, 255, 0.95); }
+.nx-pin-card__glow {
+  position: absolute;
+  inset: auto -20% -40% -20%;
+  height: 70%;
+  background: radial-gradient(50% 50% at 50% 50%, var(--tone) 0%, transparent 70%);
+  opacity: 0;
+  filter: blur(10px);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.nx-pin-card__num {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--tone);
+  margin-bottom: 14px;
+}
+.nx-pin-card__icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  color: var(--tone);
+  background: var(--tone-bg);
+  border: 1px solid #fff;
+  box-shadow: 0 10px 24px -12px var(--tone);
+}
+.nx-pin-card__icon svg { width: 26px; height: 26px; }
+.nx-pin-card h3 {
+  position: relative;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #0e1220;
+  margin-bottom: 8px;
+}
+.nx-pin-card p {
+  position: relative;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #4d5366;
+}
+.nx-pin__foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+}
+.nx-pin__count strong { color: #fff; font-size: 16px; }
+.nx-pin__bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+}
+.nx-pin__bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #ff6a00, #ffa24a);
+  transform-origin: 0 50%;
+}
+.nx-pin__hint {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+@media (min-width: 700px) {
+  .nx-pin__track { --cw: 380px; }
+}
+
+/* Reduced-motion fallback: plain list */
+.nx-process.nx-process--list { height: auto; max-height: none; padding: 80px 0; }
+.nx-pin-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 28px;
+}
+.nx-pin-list .nx-pin-card { flex: none; min-height: 0; }

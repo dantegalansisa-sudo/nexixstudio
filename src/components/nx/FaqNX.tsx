@@ -82,9 +82,10 @@ export default function FaqNX() {
               <span key={l.text} className="nx-mask" aria-hidden="true">
                 <motion.span
                   className={`nx-mask__line ${l.tone === "orange" ? "nx-line--orange" : ""}`}
-                  initial={reduce ? false : { y: "108%" }}
-                  animate={inView ? { y: "0%" } : undefined}
-                  transition={{ duration: 1, delay: 0.1 + i * 0.12, ease: EASE }}
+                  // Title comes into focus: blur + wide tracking → sharp
+                  initial={reduce ? false : { opacity: 0, filter: "blur(14px)", letterSpacing: "0.04em" }}
+                  animate={inView ? { opacity: 1, filter: "blur(0px)", letterSpacing: "-0.04em" } : undefined}
+                  transition={{ duration: 1.1, delay: 0.1 + i * 0.15, ease: EASE }}
                 >
                   {l.text}
                 </motion.span>
@@ -139,9 +140,12 @@ export default function FaqNX() {
               <motion.li
                 key={f.q}
                 className={`nx-acc ${isOpen ? "is-open" : ""}`}
-                initial={{ opacity: 0, x: reduce ? 0 : 40 }}
-                animate={inView ? { opacity: 1, x: 0 } : undefined}
-                transition={{ duration: 0.8, delay: 0.25 + i * 0.07, ease: EASE }}
+                // Each question flips down in 3D as it reaches the screen
+                initial={reduce ? { opacity: 0 } : { opacity: 0, rotateX: -75, y: -10 }}
+                whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ duration: 0.75, delay: (i % 2) * 0.06, ease: EASE }}
+                style={{ transformOrigin: "50% 0%" }}
               >
                 <h3>
                   <button

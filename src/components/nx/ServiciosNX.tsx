@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, useInView, useReducedMotion, type PanInfo } from "framer-motion";
 import MagneticNX from "./MagneticNX";
 import { SERVICES, servicePath, type Service } from "../../data/services";
+import ScrubWords from "./ScrubWords";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -238,8 +239,13 @@ function SnapRow({ inView, reduce }: { inView: boolean; reduce: boolean }) {
             key={s.key}
             className="nx-snap__item"
             initial={false}
-            animate={{ opacity: inView ? 1 : 0, y: inView || reduce ? 0 : 60 }}
-            transition={{ duration: 0.9, ease: EASE, delay: 0.1 + Math.abs(i - START) * 0.1 }}
+            // Cards fan in from the side like a dealt hand
+            animate={
+              inView || reduce
+                ? { opacity: 1, x: 0, rotate: 0, scale: 1 }
+                : { opacity: 0, x: 140 + Math.abs(i - START) * 40, rotate: 10, scale: 0.9 }
+            }
+            transition={{ type: "spring", stiffness: 90, damping: 16, delay: 0.15 + Math.abs(i - START) * 0.12 }}
           >
             <ServiceCard s={s} active onActivate={() => scrollToCard(i)} />
           </motion.div>
@@ -268,7 +274,7 @@ export default function ServiciosNX() {
   const reduce = !!useReducedMotion();
   const isDesktop = useIsDesktop();
 
-  const lines = [
+  const lines: { text: string; tone: "ink" | "blue" }[] = [
     { text: "Soluciones digitales", tone: "ink" },
     { text: "para hacer crecer tu negocio", tone: "blue" },
   ];
@@ -287,20 +293,7 @@ export default function ServiciosNX() {
           Servicios
         </motion.span>
 
-        <h2 className="nx-services__title" aria-label="Soluciones digitales para hacer crecer tu negocio">
-          {lines.map((l, i) => (
-            <span key={l.text} className="nx-mask" aria-hidden="true">
-              <motion.span
-                className={`nx-mask__line nx-hero__line--${l.tone}`}
-                initial={reduce ? false : { y: "108%" }}
-                animate={inView ? { y: "0%" } : undefined}
-                transition={{ duration: 1, delay: 0.1 + i * 0.12, ease: EASE }}
-              >
-                {l.text}
-              </motion.span>
-            </span>
-          ))}
-        </h2>
+        <ScrubWords className="nx-services__title" lines={lines} />
 
         <motion.p
           className="nx-services__lead"

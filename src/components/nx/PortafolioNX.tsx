@@ -1,6 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import MagneticNX from "./MagneticNX";
+import LoopVideo from "./LoopVideo";
+
+/**
+ * Portfolio reel: scroll-through of our own sites (Dominican Routes, Grupo MYJ,
+ * Brisas de Romana Green, Dimado). Replace the files to update it.
+ */
+export const PORTFOLIO_VIDEO = {
+  mp4: "/videos/portfolio-web.mp4",
+  webm: "/videos/portfolio-web.webm",
+  poster: "/videos/portfolio-web-poster.webp",
+  width: 960,
+  height: 540,
+};
 import { whatsappLink } from "../../lib/whatsapp";
 import { trackWhatsAppClick } from "../../lib/analytics";
 import { PORTFOLIO, PORTFOLIO_FILTERS, displayHost, type PortfolioProject } from "../../data/portfolio";
@@ -115,7 +128,10 @@ export default function PortafolioNX() {
   const [expanded, setExpanded] = useState(false);
 
   const { scrollYProgress } = useScroll({ target: showcaseRef, offset: ["start end", "end start"] });
-  const showcaseY = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["6%", "-6%"]);
+  // The screen straightens up and grows as it scrolls into view
+  const screenScale = useTransform(scrollYProgress, [0, 0.45], reduce ? [1, 1] : [0.82, 1]);
+  const screenTilt = useTransform(scrollYProgress, [0, 0.45], reduce ? [0, 0] : [18, 0]);
+  const screenY = useTransform(scrollYProgress, [0.45, 1], reduce ? ["0%", "0%"] : ["0%", "-8%"]);
 
   const featured = PORTFOLIO[0];
   const filtered = useMemo(
@@ -181,18 +197,17 @@ export default function PortafolioNX() {
           </div>
 
           <div ref={showcaseRef} className="nx-portfolio__showcase">
-            <motion.img
-              src="/images/portafolio-showcase.webp"
-              alt=""
-              loading="lazy"
-              decoding="async"
-              width="1672"
-              height="941"
-              style={{ y: showcaseY }}
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={inView ? { opacity: 1, scale: 1 } : undefined}
-              transition={{ duration: 1.2, delay: 0.2, ease: EASE }}
-            />
+            <motion.div className="nx-pf-screen" style={{ scale: screenScale, rotateX: screenTilt, y: screenY }}>
+              <div className="nx-pf-screen__bar" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <span>Proyectos NEXIX</span>
+              </div>
+              <div className="nx-pf-screen__video">
+                <LoopVideo src={PORTFOLIO_VIDEO} />
+              </div>
+            </motion.div>
             <motion.a
               href={featured.url}
               target="_blank"
@@ -268,13 +283,15 @@ export default function PortafolioNX() {
                   key={p.slug}
                   layout
                   className={`nx-bento__item nx-bento__item--${variantFor(i)}`}
-                  initial={{ opacity: 0, y: 40, scale: 0.98 }}
-                  animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 60 }}
+                  // Each card is unveiled like a curtain rising as it enters the screen
+                  initial={reduce ? { opacity: 0 } : { opacity: 0, y: 50, clipPath: "inset(100% 0% 0% 0% round 26px)" }}
+                  whileInView={{ opacity: 1, y: 0, clipPath: "inset(-60px -60px -60px -60px round 26px)" }}
+                  viewport={{ once: true, amount: 0.25 }}
                   exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.25 } }}
                   transition={{
-                    duration: 0.7,
+                    duration: 0.9,
                     ease: EASE,
-                    delay: inView ? Math.min(i, 6) * 0.08 : 0,
+                    delay: (i % 3) * 0.08,
                     layout: { duration: 0.6, ease: EASE },
                   }}
                 >
