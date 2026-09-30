@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { headline, features } from "./HeroNX";
 import { whatsappLink } from "../../lib/whatsapp";
@@ -25,8 +26,52 @@ function ArrowRight() {
   );
 }
 
+/**
+ * Keeps the hero video looping everywhere. iOS Safari only autoplays when the
+ * `muted` *attribute* is present (React sets just the property), and some
+ * browsers can stall at the end of a loop or pause the video when the tab is
+ * backgrounded — so we restart it ourselves when that happens.
+ */
+function useLoopingVideo() {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    v.setAttribute("playsinline", "");
+    v.setAttribute("webkit-playsinline", "");
+
+    const play = () => {
+      v.play().catch(() => {
+        /* autoplay blocked (e.g. Low Power Mode): the poster stays visible */
+      });
+    };
+    const restart = () => {
+      v.currentTime = 0;
+      play();
+    };
+    const resumeIfVisible = () => {
+      if (document.visibilityState === "visible" && v.paused) play();
+    };
+
+    v.addEventListener("ended", restart);
+    v.addEventListener("pause", resumeIfVisible);
+    document.addEventListener("visibilitychange", resumeIfVisible);
+    play();
+    return () => {
+      v.removeEventListener("ended", restart);
+      v.removeEventListener("pause", resumeIfVisible);
+      document.removeEventListener("visibilitychange", resumeIfVisible);
+    };
+  }, []);
+  return ref;
+}
+
 export default function HeroMobileNX() {
   const reduce = !!useReducedMotion();
+  const videoRef = useLoopingVideo();
 
   function goToServices(e: React.MouseEvent<HTMLAnchorElement>) {
     const target = document.getElementById("servicios");
@@ -81,6 +126,7 @@ export default function HeroMobileNX() {
               <img src={HERO_VIDEO.poster} alt="" width={HERO_VIDEO.width} height={HERO_VIDEO.height} fetchPriority="high" />
             ) : (
               <video
+                ref={videoRef}
                 autoPlay
                 muted
                 loop
@@ -92,8 +138,9 @@ export default function HeroMobileNX() {
                 aria-hidden="true"
                 tabIndex={-1}
               >
-                <source src={HERO_VIDEO.webm} type="video/webm" />
+                {/* MP4 first: H.264 loops reliably on iOS Safari; others fall back to WebM */}
                 <source src={HERO_VIDEO.mp4} type="video/mp4" />
+                <source src={HERO_VIDEO.webm} type="video/webm" />
               </video>
             )}
           </div>
