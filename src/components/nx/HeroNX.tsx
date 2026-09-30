@@ -11,13 +11,13 @@ const HERO_RATIO = 1672 / 941;
 // Secondary CTA target — switch to { label: "Ver portafolio", target: "portafolio" } to point it at the portfolio.
 const SECONDARY_CTA = { label: "Ver servicios", target: "servicios" };
 
-const headline = [
+export const headline = [
   { text: "Ideas digitales", tone: "ink" },
   { text: "en resultados", tone: "blue" },
   { text: "reales", tone: "blue" },
 ];
 
-const features = [
+export const features = [
   {
     label: ["Páginas web", "profesionales"],
     icon: (

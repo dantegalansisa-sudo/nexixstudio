@@ -1,0 +1,166 @@
+/* ============================================
+   NEXIX — Mobile hero (< 768px only)
+   logo → headline → video → CTA, all within the first screen
+   ============================================ */
+@media (max-width: 767px) {
+  :root { --nx-nav-h: 64px; }
+  .nx-nav__logo img { height: 26px; }
+  .nx-nav__logo span { font-size: 17px; }
+  .nx-nav__burger { width: 42px; height: 42px; }
+  .nx-nav__burger span:first-child { top: 16px; }
+  .nx-nav__burger span:last-child { top: 24px; }
+  .nx-nav__burger.is-open span { top: 20px; }
+  .nx-nav { animation: nx-nav-in 0.35s var(--nx-ease) both; }
+
+  /* The floating WhatsApp button waits until the hero is scrolled past */
+  .nx-wa-float {
+    transition: transform 0.3s var(--nx-ease), opacity 0.3s var(--nx-ease);
+  }
+  .nx-wa-float.is-hidden {
+    opacity: 0;
+    transform: translateY(16px) scale(0.9);
+    pointer-events: none;
+  }
+}
+
+@keyframes nx-nav-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.nx-mhero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.6svh, 24px);
+  padding: calc(var(--nx-nav-h) + 8px) 16px clamp(18px, 3svh, 32px);
+  overflow: hidden;
+  text-align: center;
+  background: linear-gradient(180deg, #f5f7fc 0%, #eef2fd 60%, #f5f7fc 100%);
+  font-family: var(--nx-font);
+  word-spacing: 0.04em;
+  isolation: isolate;
+}
+.nx-mhero__glow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 56%;
+  width: 140%;
+  height: 46%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(80, 110, 250, 0.26) 0%, rgba(80, 110, 250, 0) 70%);
+}
+.nx-mhero__title {
+  font-size: clamp(40px, 12.4vw, 56px);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  word-spacing: 0.06em;
+  color: var(--nx-ink);
+}
+.nx-mhero__title .nx-mask { padding-bottom: 0.06em; }
+.nx-mhero__sub {
+  max-width: 320px;
+  margin-top: -4px;
+  font-size: 15.5px;
+  line-height: 1.45;
+  color: var(--nx-text);
+}
+
+/* Browser-style frame around the video */
+.nx-mhero__screen {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 18px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 0 0 1px rgba(52, 87, 238, 0.08),
+    0 24px 48px -22px rgba(30, 44, 120, 0.55),
+    0 0 60px -12px rgba(80, 110, 250, 0.55);
+}
+.nx-mhero__bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 18px;
+  padding: 0 8px;
+}
+.nx-mhero__bar i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d3d8e6;
+}
+.nx-mhero__bar i:first-child { background: #ff8a80; }
+.nx-mhero__bar i:nth-child(2) { background: #ffd166; }
+.nx-mhero__bar i:nth-child(3) { background: #7bd88f; }
+.nx-mhero__video {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #e8ecf6;
+}
+.nx-mhero__video video,
+.nx-mhero__video img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.nx-mhero__ctas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.nx-mhero__cta {
+  width: min(100%, 320px);
+}
+.nx-mhero__link {
+  padding: 6px 12px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--nx-ink-2);
+  text-decoration: underline;
+  text-decoration-color: rgba(18, 30, 80, 0.25);
+  text-underline-offset: 4px;
+}
+.nx-mhero__link:focus-visible {
+  outline: 2px solid var(--nx-blue);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Intro block moved out of the first screen */
+.nx-mintro {
+  padding: 48px 0 8px;
+  background: #f5f7fc;
+  font-family: var(--nx-font);
+}
+.nx-mintro__lead {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--nx-text);
+  margin-bottom: 24px;
+}
+.nx-mintro__features { margin-top: 0; }
+
+/* Short phones (e.g. 360x640): tighten so everything stays in view */
+@media (max-height: 700px) {
+  .nx-mhero__title { font-size: clamp(36px, 11vw, 46px); }
+  .nx-mhero__sub { font-size: 14.5px; }
+  .nx-mhero__screen { max-width: 440px; }
+}

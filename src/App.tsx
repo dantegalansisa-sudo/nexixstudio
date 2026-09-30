@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { MOBILE_QUERY, useMediaQuery } from "./hooks/useMediaQuery";
 import NavbarNX from "./components/nx/NavbarNX";
 import FooterNX from "./components/nx/FooterNX";
 import { WhatsAppGlyph } from "./components/nx/ContactoNX";
@@ -23,7 +24,7 @@ function ScrollManager() {
     const seek = () => {
       const el = document.getElementById(decodeURIComponent(hash.slice(1)));
       if (el) el.scrollIntoView({ behavior: "smooth" });
-      else if (tries++ < 90) frame = requestAnimationFrame(seek);
+      else if (tries++ < 300) frame = requestAnimationFrame(seek);
     };
     seek();
     return () => cancelAnimationFrame(frame);
@@ -31,7 +32,24 @@ function ScrollManager() {
   return null;
 }
 
+/** On phones, the floating WhatsApp button waits until the home hero is scrolled past. */
+function useHideFloat() {
+  const { pathname } = useLocation();
+  const isPhone = useMediaQuery(MOBILE_QUERY);
+  const active = isPhone && pathname === "/";
+  const [pastHero, setPastHero] = useState(false);
+  useEffect(() => {
+    if (!active) return;
+    const on = () => setPastHero(window.scrollY > window.innerHeight * 0.6);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, [active]);
+  return active && !pastHero;
+}
+
 export default function App() {
+  const hideFloat = useHideFloat();
   return (
     <>
       <ScrollManager />
@@ -57,7 +75,9 @@ export default function App() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escríbenos por WhatsApp"
-        className="nx-wa-float"
+        className={`nx-wa-float ${hideFloat ? "is-hidden" : ""}`}
+        aria-hidden={hideFloat || undefined}
+        tabIndex={hideFloat ? -1 : undefined}
       >
         <WhatsAppGlyph />
       </a>
