@@ -46,7 +46,10 @@ body {
   background-color: #f5f7fc;
   color: #4a5273;
   line-height: 1.6;
+  /* clip (not hidden) so the body never becomes a scroll container:
+     keeps native momentum scrolling on iOS */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 ::selection {

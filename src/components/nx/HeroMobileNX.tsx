@@ -43,7 +43,10 @@ function useLoopingVideo() {
     v.setAttribute("playsinline", "");
     v.setAttribute("webkit-playsinline", "");
 
+    // Pause while off-screen so decoding doesn't compete with scrolling
+    let onScreen = true;
     const play = () => {
+      if (!onScreen || document.visibilityState !== "visible") return;
       v.play().catch(() => {
         /* autoplay blocked (e.g. Low Power Mode): the poster stays visible */
       });
@@ -53,14 +56,21 @@ function useLoopingVideo() {
       play();
     };
     const resumeIfVisible = () => {
-      if (document.visibilityState === "visible" && v.paused) play();
+      if (v.paused) play();
     };
+    const io = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      if (onScreen) play();
+      else v.pause();
+    });
+    io.observe(v);
 
     v.addEventListener("ended", restart);
     v.addEventListener("pause", resumeIfVisible);
     document.addEventListener("visibilitychange", resumeIfVisible);
     play();
     return () => {
+      io.disconnect();
       v.removeEventListener("ended", restart);
       v.removeEventListener("pause", resumeIfVisible);
       document.removeEventListener("visibilitychange", resumeIfVisible);

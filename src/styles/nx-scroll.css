@@ -186,3 +186,53 @@
 @media (prefers-reduced-motion: reduce) {
   .nx-contact__form .nx-form > * { opacity: 1; transform: none; animation: none !important; }
 }
+
+/* ============================================
+   Scroll performance on phones/tablets
+   The frosted-glass blur (backdrop-filter) is recomputed every frame for
+   anything that moves or scrolls over content. These cards are already
+   ~85% opaque, so on small screens we drop the blur and make them solid.
+   ============================================ */
+@media (max-width: 1024px) {
+  .nx-scard,
+  .nx-scard__icon,
+  .nx-pill,
+  .nx-pcard,
+  .nx-tab,
+  .nx-featured,
+  .nx-faq__help,
+  .nx-acc,
+  .nx-step__card,
+  .nx-pin-card,
+  .nx-form-card,
+  .nx-btn--glass,
+  .nx-sp-hero__chip {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .nx-scard { background: linear-gradient(180deg, #ffffff 0%, #f8f9fe 100%); }
+  .nx-pcard { background: linear-gradient(180deg, #ffffff 0%, #f8f9fe 100%); }
+  .nx-acc { background: rgba(255, 255, 255, 0.94); }
+  .nx-faq__help { background: rgba(255, 255, 255, 0.92); }
+  .nx-tab { background: #fff; }
+  .nx-btn--glass { background: rgba(255, 255, 255, 0.92); }
+  /* Fixed navbar: lighter blur, more opaque */
+  .nx-nav.is-scrolled {
+    background: rgba(248, 250, 255, 0.94);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  /* Moving cards get their own GPU layer */
+  .nx-snap__item,
+  .nx-bento__item,
+  .nx-acc { will-change: transform; }
+}
+
+/* Horizontal rows must never trap vertical swipes: a vertical drag that
+   starts on the service cards or the filter tabs scrolls the page */
+.nx-snap,
+.nx-tabs {
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+}

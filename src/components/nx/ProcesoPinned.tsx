@@ -75,7 +75,7 @@ export default function ProcesoPinned({ steps, eyebrow, title }: { steps: Step[]
   }
 
   return (
-    <section ref={sectionRef} id="proceso" className="nx-process nx-process--pin" style={{ height: `${100 + (n - 1) * 75}svh` }}>
+    <section ref={sectionRef} id="proceso" className="nx-process nx-process--pin" style={{ height: `${100 + (n - 1) * 60}svh` }}>
       <div className="nx-pin">
         <picture className="nx-process__bg" aria-hidden="true">
           <img src="/images/proceso-bg-900.webp" alt="" loading="lazy" decoding="async" width="900" height="506" />

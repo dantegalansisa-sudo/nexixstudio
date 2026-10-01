@@ -6,9 +6,8 @@ type Line = { text: string; tone: "ink" | "blue" };
 function Word({ word, tone, progress, range }: { word: string; tone: Line["tone"]; progress: MotionValue<number>; range: [number, number] }) {
   const opacity = useTransform(progress, range, [0.06, 1]);
   const y = useTransform(progress, range, ["0.45em", "0em"]);
-  const filter = useTransform(progress, range, ["blur(10px)", "blur(0px)"]);
   return (
-    <motion.span className={`nx-scrub__word ${tone === "blue" ? "nx-hero__line--blue" : ""}`} style={{ opacity, y, filter }}>
+    <motion.span className={`nx-scrub__word ${tone === "blue" ? "nx-hero__line--blue" : ""}`} style={{ opacity, y }}>
       {word}
     </motion.span>
   );
